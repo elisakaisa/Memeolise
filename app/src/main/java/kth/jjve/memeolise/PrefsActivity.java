@@ -6,19 +6,46 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.widget.Toolbar;
+import androidx.appcompat.widget.SwitchCompat;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.Objects;
+
 public class PrefsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
+    /*-------------------------- VIEWS ----------------------*/
     private DrawerLayout drawerLayout2;
     private NavigationView navigationView2;
     private Toolbar toolbar2;
+    private Button button1, button2, button3, buttonSave;
+    private SwitchCompat switch1, switch2, switch3;
+    private EditText et1, et2, et3;
+
+    /*-------------------------- PREFS ----------------------*/
+    private Preferences cPreferences; //Object of the class Preferences
+    private int cTheme; //Todo: add the theme stuff to this
+    private int cVoice = 42; //Integer that decides which voice is being used
+    private boolean cAudio = true; //Boolean that decides if audio is on or off
+    private boolean cVisual = true; //Boolean that decides if visuals are on or off
+    private int cEventInterval = 50; //Interval between events in game
+    private int cNumberofEvents = 10; //Number of events the user plays
+    private int cValueofN = 1; //User can decide n
 
     /*--------------------------- LOG -----------------------*/
     private static final String LOG_TAG = PrefsActivity.class.getSimpleName();
@@ -32,6 +59,16 @@ public class PrefsActivity extends AppCompatActivity implements NavigationView.O
         drawerLayout2 = findViewById(R.id.drawer_layout_prefs);
         navigationView2 = findViewById(R.id.nav_view_prefs);
         toolbar2 = findViewById(R.id.prefs_toolbar);
+        button1 = findViewById(R.id.button_prefs_theme1);
+        button2 = findViewById(R.id.button_prefs_theme2);
+        button3 = findViewById(R.id.button_prefs_theme3);
+        buttonSave = findViewById(R.id.button_prefs_Save);
+        switch1 = findViewById(R.id.switchVoice);
+        switch2 = findViewById(R.id.switchAudio);
+        switch3 = findViewById(R.id.switchVisual);
+        et1 = findViewById(R.id.editTextNr_prefs_EventInterval);
+        et2 = findViewById(R.id.editTextNr_prefs_NumberofEvents);
+        et3 = findViewById(R.id.editTextNr_prefs_ValueN);
 
         /*--------------------- Tool bar --------------------*/
         setSupportActionBar(toolbar2);
@@ -44,6 +81,66 @@ public class PrefsActivity extends AppCompatActivity implements NavigationView.O
         toggle.syncState();
         navigationView2.setNavigationItemSelectedListener(this);
         navigationView2.setCheckedItem(R.id.nav_preferences);
+
+        /*-------------------- Get preferences ------------------*/
+        getPreferences();
+
+        /*-------------------- onClickListeners ------------------*/
+        button1.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                cTheme = 1;
+            }
+        });
+
+        button2.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                cTheme = 2;
+            }
+        });
+
+        button3.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                cTheme = 3;
+            }
+        });
+
+        buttonSave.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                setPreferences();
+                Toast toast = Toast.makeText(getApplicationContext(), "Preferences saved",
+                        Toast.LENGTH_SHORT);
+                toast.show(); //Todo: find out why this toast doesn't show
+            }
+        });
+
+        switch1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked){
+                    cVoice = 42;
+                }else{
+                    cVoice = 42; //Todo: find the integer for a different voice
+                }
+            }
+        });
+
+        switch2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                cAudio = isChecked;
+            }
+        });
+
+        switch3.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                cVisual = isChecked;
+            }
+        });
     }
 
     @Override
@@ -51,11 +148,18 @@ public class PrefsActivity extends AppCompatActivity implements NavigationView.O
         super.onResume();
         navigationView2.setCheckedItem(R.id.nav_preferences);
         Log.i(LOG_TAG, "onResume happens");
+        //getPreferences(); //Todo: find out if this is needed
+    }
+
+    @Override
+    protected void onPause(){
+        Log.i(LOG_TAG, "onPause happens");
+        super.onPause();
     }
 
     @Override
     public void onBackPressed() {
-
+        Log.i(LOG_TAG, "onBackPressed happens");
         if(drawerLayout2.isDrawerOpen(GravityCompat.START)){
             drawerLayout2.closeDrawer(GravityCompat.START);
         } else {
@@ -76,7 +180,81 @@ public class PrefsActivity extends AppCompatActivity implements NavigationView.O
         drawerLayout2.closeDrawer(GravityCompat.START);
         return true;
     }
-    //Todo: Add onClickListeners to the onCreate --> see FancyWeatherApp for example
-    //Todo: Add onSwitchListener to the onCreate --> find online if/how that works
-    //Todo: Add serialiser and deserialiser for preference data
+
+    private void setPreferences(){
+        cEventInterval = Integer.parseInt(et1.getText().toString());
+        cNumberofEvents = Integer.parseInt(et2.getText().toString());
+        cValueofN = Integer.parseInt(et3.getText().toString());
+
+        serialisePreferences(cTheme, cVoice, cAudio, cVisual,
+                             cEventInterval, cNumberofEvents, cValueofN);
+    }
+
+    private void getPreferences() {
+        deserialisePreferences();
+
+        if (cPreferences!=null){
+            cTheme = cPreferences.getTheme();
+            cVoice = cPreferences.getVoice();
+            cAudio = cPreferences.getAudio();
+            cVisual = cPreferences.getVisual();
+            cEventInterval = cPreferences.getEventInterval();
+            cNumberofEvents = cPreferences.getNumberofEvents();
+            cValueofN = cPreferences.getValueofN();
+
+            if (cVoice == 42) {
+                switch1.setChecked(true);
+            }else{
+                switch2.setChecked(false);
+            }
+
+            switch2.setChecked(cAudio);
+            switch3.setChecked(cVisual);
+
+            et1.setText(String.valueOf(cEventInterval));
+            et2.setText(String.valueOf(cNumberofEvents));
+            et3.setText(String.valueOf(cValueofN));
+        }
+    }
+
+    private void serialisePreferences(int theme, int voice, boolean audio, boolean visual,
+                                      int eventInterval, int numberofEvents, int valueofN){
+        Preferences prefs = new Preferences(theme, voice, audio, visual, eventInterval, numberofEvents, valueofN);
+        try{
+            FileOutputStream fos = openFileOutput("preferences.ser", Context.MODE_PRIVATE);
+
+            // Wrapping our file stream
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+
+            // Writing the serializable object to the file
+            oos.writeObject(prefs);
+
+            // Closing our object stream which also closes the wrapped stream.
+            oos.close();
+        } catch (Exception e) {
+            Log.i(LOG_TAG, "Exception is " + e);
+            e.printStackTrace();
+        }
+    }
+
+    private void deserialisePreferences(){
+        try{
+            FileInputStream fin = openFileInput("preferences.ser");
+
+            // Wrapping our stream
+            ObjectInputStream oin = new ObjectInputStream(fin);
+
+            // Reading in our object
+            cPreferences = (Preferences) oin.readObject();
+
+            // Closing our object stream which also closes the wrapped stream
+            oin.close();
+
+        } catch (Exception e) {
+            Log.i(LOG_TAG, "Error is " + e);
+            e.printStackTrace();
+        }
+    }
+
+
 }
