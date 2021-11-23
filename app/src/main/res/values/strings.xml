@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Memeolise</string>
+    <string name="button_Start">Start</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="tv_prefs_NumberofEvents">Number of \nEvents</string>
+    <string name="tv_prefs_ValueofN">Value of \n n</string>
+    <string name="et_prefs_hintEventInterval">[ms]</string>
+    <string name="tv_prefs_Theme">Theme</string>
+    <string name="tv_prefs_Voice">Voice</string>
+    <string name="tv_prefs_EventInterval">Event \ninterval</string>
+    <string name="et_prefs_hintNumberofEvents">[int]</string>
+    <string name="et_prefs_ValueN">[int]</string>
+    <string name="buttonStart">Start</string>
+
+</resources>

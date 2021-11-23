@@ -1,0 +1,25 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.Memeolise" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/BlueGray_500</item>
+        <item name="colorPrimaryVariant">@color/BlueGray_700</item>
+        <item name="colorOnPrimary">@color/PaleSilver</item>
+        <!-- Secondary brand color -->
+        <item name="colorSecondary">@color/DeepChestnut</item>
+        <item name="colorSecondaryVariant">@color/DarkSienna</item>
+        <item name="colorOnSecondary">@color/PaleSilver</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor" tools:targetApi="l">@color/PaleSilver</item>
+        <!-- Customize your theme here. -->
+    </style>
+
+    <style name="MyButton">
+        <item name="backgroundTint">#5C1F2325</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:textColor">@color/PaleSilver</item>
+        <item name="cornerRadius">1000pt</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
+
+</resources>

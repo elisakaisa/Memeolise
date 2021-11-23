@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout_prefs"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    tools:context=".PrefsActivity"
+    android:fitsSystemWindows="true">
+<!--    tools:openDrawer="start">-->
+
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view_prefs"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:headerLayout="@layout/header"
+        app:menu="@menu/main_menu" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include
+            android:id="@+id/prefs_toolbar"
+            layout="@layout/toolbar" />
+
+        <TextView
+            android:id="@+id/textView_pref_theme"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tv_prefs_Theme"
+            android:textAlignment="viewStart"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/textView_prefs_Voice"
+            app:layout_constraintEnd_toStartOf="@+id/button_prefs_theme1"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/prefs_toolbar" />
+
+        <Button
+            android:id="@+id/button_prefs_theme1"
+            style="@style/MyButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:text=""
+            app:layout_constraintBottom_toBottomOf="@+id/textView_pref_theme"
+            app:layout_constraintEnd_toStartOf="@+id/button_prefs_theme2"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/textView_pref_theme"
+            app:layout_constraintTop_toTopOf="@+id/textView_pref_theme"
+            tools:ignore="SpeakableTextPresentCheck" />
+
+        <Button
+            android:id="@+id/button_prefs_theme2"
+            style="@style/MyButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:text=""
+            app:layout_constraintBottom_toBottomOf="@+id/button_prefs_theme1"
+            app:layout_constraintEnd_toStartOf="@+id/button_prefs_theme3"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/button_prefs_theme1"
+            app:layout_constraintTop_toTopOf="@+id/button_prefs_theme1"
+            tools:ignore="SpeakableTextPresentCheck" />
+
+        <Button
+            android:id="@+id/button_prefs_theme3"
+            style="@style/MyButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:text=""
+            app:layout_constraintBottom_toBottomOf="@+id/button_prefs_theme2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/button_prefs_theme2"
+            app:layout_constraintTop_toTopOf="@+id/button_prefs_theme2"
+            tools:ignore="SpeakableTextPresentCheck" />
+
+        <TextView
+            android:id="@+id/textView_prefs_Voice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tv_prefs_Voice"
+            android:textAlignment="viewStart"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/textView_prefs_EventInterval"
+            app:layout_constraintStart_toStartOf="@+id/textView_pref_theme"
+            app:layout_constraintTop_toBottomOf="@+id/textView_pref_theme" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switchVoice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:thumb="@drawable/thumb1"
+            app:track="@drawable/track"
+            app:layout_constraintBottom_toBottomOf="@+id/textView_prefs_Voice"
+            app:layout_constraintEnd_toEndOf="@+id/editTextNr_prefs_EventInterval"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="@+id/editTextNr_prefs_EventInterval"
+            app:layout_constraintTop_toTopOf="@+id/textView_prefs_Voice" />
+
+        <TextView
+            android:id="@+id/textView_prefs_EventInterval"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tv_prefs_EventInterval"
+            android:textAlignment="viewStart"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/textView_prefs_NumberofEvents"
+            app:layout_constraintStart_toStartOf="@+id/textView_prefs_Voice"
+            app:layout_constraintTop_toBottomOf="@+id/textView_prefs_Voice" />
+
+        <EditText
+            android:id="@+id/editTextNr_prefs_EventInterval"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/et_prefs_hintEventInterval"
+            android:importantForAutofill="no"
+            android:inputType="number"
+            android:minHeight="48dp"
+            app:layout_constraintBottom_toBottomOf="@+id/textView_prefs_EventInterval"
+            app:layout_constraintEnd_toEndOf="@+id/editTextNr_prefs_NumberofEvents"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="@+id/editTextNr_prefs_NumberofEvents"
+            app:layout_constraintTop_toTopOf="@+id/textView_prefs_EventInterval"
+            tools:ignore="TextContrastCheck" />
+
+        <TextView
+            android:id="@+id/textView_prefs_NumberofEvents"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tv_prefs_NumberofEvents"
+            android:textAlignment="viewStart"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/textView_pref_ValueN"
+            app:layout_constraintStart_toStartOf="@+id/textView_pref_ValueN"
+            app:layout_constraintTop_toBottomOf="@+id/textView_prefs_EventInterval" />
+
+        <EditText
+            android:id="@+id/editTextNr_prefs_NumberofEvents"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/et_prefs_hintNumberofEvents"
+            android:importantForAutofill="no"
+            android:inputType="number"
+            android:minHeight="48dp"
+            app:layout_constraintBottom_toBottomOf="@+id/textView_prefs_NumberofEvents"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/textView_prefs_NumberofEvents"
+            app:layout_constraintTop_toTopOf="@+id/textView_prefs_NumberofEvents"
+            tools:ignore="TextContrastCheck,DuplicateSpeakableTextCheck" />
+
+        <TextView
+            android:id="@+id/textView_pref_ValueN"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tv_prefs_ValueofN"
+            android:textAlignment="viewStart"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/textView_pref_theme"
+            app:layout_constraintTop_toBottomOf="@+id/textView_prefs_NumberofEvents" />
+
+        <EditText
+            android:id="@+id/editTextNr_prefs_ValueN"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/et_prefs_ValueN"
+            android:inputType="number"
+            android:minHeight="48dp"
+            app:layout_constraintBottom_toBottomOf="@+id/textView_pref_ValueN"
+            app:layout_constraintEnd_toEndOf="@+id/editTextNr_prefs_NumberofEvents"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="@+id/editTextNr_prefs_NumberofEvents"
+            app:layout_constraintTop_toTopOf="@+id/textView_pref_ValueN"
+            tools:ignore="TextContrastCheck"
+            android:importantForAutofill="no" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+</androidx.drawerlayout.widget.DrawerLayout>
