@@ -20,13 +20,9 @@ public class GameView extends View {
     private float cellSize = boardSize / SIZE;
 
 
-    public GameView(Context context) {
+    public GameView(Context context, AttributeSet attrs) {
         super(context);
-    }
 
-
-    // first paint object needs to be created
-    private void init(){
         paint = new Paint(); //Paint provides methods to define that line's color
         paint.setAntiAlias(true);
         paint.setStyle(Paint.Style.STROKE);
