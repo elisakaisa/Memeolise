@@ -13,5 +13,10 @@
     <string name="et_prefs_hintNumberofEvents">[int]</string>
     <string name="et_prefs_ValueN">[int]</string>
     <string name="buttonStart">Start</string>
+    <string name="tv_prefs_Audio">Audio</string>
+    <string name="tv_prefs_Visual">Visual</string>
+    <string name="switch_textOff">Off</string>
+    <string name="switch_textOn">On</string>
+    <string name="button_prefs_Save">Save</string>
 
 </resources>
