@@ -18,16 +18,17 @@ public class GameActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
     //UI
-    private Button buttonPosition;
+    private Button buttonVisual;
     private Button buttonAudio;
 
     // variables for counting how many times button is pressed
-    public int positionMatchCounter = 0;
     public int audioMatchCounter = 0;
+    public int visualMatchCounter = 0;
 
     // tts variables
-    private TextToSpeech textToSpeach;
-    private static final int utteranceId = 42; //might be where we set the voice? to be investigated
+    private TextToSpeech textToSpeech;
+    private static final int utteranceId = 42;
+    //TODO might be where we set the voice? to be investigated
 
 
     @Override
@@ -36,14 +37,14 @@ public class GameActivity extends AppCompatActivity {
         setContentView(R.layout.activity_game);
 
         /*---------------------- Hooks ----------------------*/
-        buttonPosition = findViewById(R.id.buttonPositionMatch);
+        buttonVisual = findViewById(R.id.buttonVisualMatch);
         buttonAudio = findViewById(R.id.buttonAudioMatch);
 
         /*-------------- On Click Listener ------------------*/
-        buttonPosition.setOnClickListener(new View.OnClickListener(){
+        buttonVisual.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                positionMatchCounter++;
+                visualMatchCounter++;
                 sayIt("position"); //get "speak failed: not bound to TTS engine", check if works with phone
                 Log.d(LOG_TAG, "position clicked");
             }
@@ -62,7 +63,7 @@ public class GameActivity extends AppCompatActivity {
 
     // for text to speech
     private void sayIt(String utterance) {
-        textToSpeach.speak(utterance, TextToSpeech.QUEUE_FLUSH,
+        textToSpeech.speak(utterance, TextToSpeech.QUEUE_FLUSH,
                 null, new String("" + utteranceId));
     }
 
@@ -70,9 +71,9 @@ public class GameActivity extends AppCompatActivity {
     // de-allocate resources
     @Override
     protected void onPause() {
-        if (textToSpeach != null) {
-            textToSpeach.stop();
-            textToSpeach.shutdown();
+        if (textToSpeech != null) {
+            textToSpeech.stop();
+            textToSpeech.shutdown();
         }
         super.onPause();
     }
@@ -82,13 +83,12 @@ public class GameActivity extends AppCompatActivity {
         super.onResume();
         // Initialize the text-to-speech service - we do this initialization
         // in onResume because we shutdown the service in onPause
-        Log.d(LOG_TAG, "onResume called");
-        textToSpeach = new TextToSpeech(getApplicationContext(),
+        textToSpeech = new TextToSpeech(getApplicationContext(),
                 new TextToSpeech.OnInitListener() {
                     @Override
                     public void onInit(int status) {
                         if (status == TextToSpeech.SUCCESS) {
-                            textToSpeach.setLanguage(Locale.UK);
+                            textToSpeech.setLanguage(Locale.UK);
                         }
                     }
                 });

@@ -16,7 +16,9 @@ public class GameView extends View {
     private Paint paint;
 
     private float boardSize = getWidth();
-    public static final int SIZE = 3; //in tictactoe is in game logic, better there?
+
+    //TODO belongs in game logic or game view?
+    public static final int SIZE = 3;
     private float cellSize = boardSize / SIZE;
 
 
@@ -28,10 +30,10 @@ public class GameView extends View {
         paint.setStyle(Paint.Style.STROKE);
     }
 
-    // called when Android is trying to figure out the (new) size for this view
-    // necessary to adapt view to tablets nd stuff
     @Override
     protected void onMeasure(int width, int height) {
+        // called when Android is trying to figure out the (new) size for this view
+        // necessary to adapt view to tablets
         super.onMeasure(width, height);
         int squareSide = Math.min(getMeasuredWidth(), getMeasuredHeight());
         float boardSize = squareSide;
@@ -43,9 +45,9 @@ public class GameView extends View {
         return cellSize;
     }
 
-    //Canvas provides a method to draw a line
     @Override
     protected void onDraw(Canvas canvas) {
+        //Canvas provides a method to draw a line
         paint.setColor(Color.BLACK);
         paint.setStrokeWidth(16);
 

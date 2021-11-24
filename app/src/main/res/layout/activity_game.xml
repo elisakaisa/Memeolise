@@ -21,12 +21,12 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/buttonPositionMatch"
+        app:layout_constraintBottom_toTopOf="@+id/buttonVisualMatch"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/buttonPositionMatch"
+        android:id="@+id/buttonVisualMatch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="32dp"
@@ -41,10 +41,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Audio"
-        app:layout_constraintBottom_toBottomOf="@+id/buttonPositionMatch"
+        app:layout_constraintBottom_toBottomOf="@+id/buttonVisualMatch"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/buttonPositionMatch"
-        app:layout_constraintTop_toTopOf="@+id/buttonPositionMatch" />
+        app:layout_constraintStart_toEndOf="@+id/buttonVisualMatch"
+        app:layout_constraintTop_toTopOf="@+id/buttonVisualMatch" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
