@@ -15,6 +15,9 @@ import android.view.MenuItem;
 
 import com.google.android.material.navigation.NavigationView;
 
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
+
 public class ResultsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private DrawerLayout drawerLayout3;
@@ -23,6 +26,9 @@ public class ResultsActivity extends AppCompatActivity implements NavigationView
 
     /*--------------------------- LOG -----------------------*/
     private static final String LOG_TAG = PrefsActivity.class.getSimpleName();
+
+    /*------------------------- CLASSES ---------------------*/
+    private Preferences cPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,5 +83,26 @@ public class ResultsActivity extends AppCompatActivity implements NavigationView
         }
         drawerLayout3.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void getPreferences(){
+        try{
+            FileInputStream fin = openFileInput("preferences.ser");
+
+            // Wrapping our stream
+            ObjectInputStream oin = new ObjectInputStream(fin);
+
+            // Reading in our object
+            cPreferences = (Preferences) oin.readObject();
+
+            // Closing our object stream which also closes the wrapped stream
+            oin.close();
+
+        } catch (Exception e) {
+            Log.i(LOG_TAG, "Error is " + e);
+            e.printStackTrace();
+        }
+
+        //todo: expand so that needed preferences are automatically taken if cPreferences is not null
     }
 }

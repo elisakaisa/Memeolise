@@ -87,8 +87,8 @@
             android:textAlignment="viewStart"
             android:textSize="20sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/textView_prefs_EventInterval"
-            app:layout_constraintStart_toStartOf="@+id/textView_pref_theme"
+            app:layout_constraintBottom_toTopOf="@+id/textView_prefs_audioOnOff"
+            app:layout_constraintStart_toStartOf="@+id/textView_prefs_audioOnOff"
             app:layout_constraintTop_toBottomOf="@+id/textView_pref_theme" />
 
         <androidx.appcompat.widget.SwitchCompat
@@ -96,12 +96,67 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:thumb="@drawable/thumb1"
-            app:track="@drawable/track"
             app:layout_constraintBottom_toBottomOf="@+id/textView_prefs_Voice"
-            app:layout_constraintEnd_toEndOf="@+id/editTextNr_prefs_EventInterval"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textView_prefs_Voice"
+            app:layout_constraintTop_toTopOf="@+id/textView_prefs_Voice"
+            app:track="@drawable/track" />
+
+        <TextView
+            android:id="@+id/textView_prefs_audioOnOff"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tv_prefs_Audio"
+            android:textAlignment="viewStart"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/textView_prefs_EventInterval"
+            app:layout_constraintStart_toStartOf="@+id/textView_prefs_EventInterval"
+            app:layout_constraintTop_toBottomOf="@+id/textView_prefs_Voice" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switchAudio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:thumb="@drawable/thumb2"
+            android:textOn="@string/switch_textOn"
+            android:textOff="@string/switch_textOff"
+            app:layout_constraintBottom_toBottomOf="@+id/textView_prefs_audioOnOff"
+            app:layout_constraintEnd_toStartOf="@+id/textView_prefs_visualOnOff2"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="@+id/editTextNr_prefs_EventInterval"
-            app:layout_constraintTop_toTopOf="@+id/textView_prefs_Voice" />
+            app:layout_constraintStart_toEndOf="@+id/textView_prefs_audioOnOff"
+            app:layout_constraintTop_toTopOf="@+id/textView_prefs_audioOnOff"
+            app:track="@drawable/track2"
+            app:showText="true"/>
+
+        <TextView
+            android:id="@+id/textView_prefs_visualOnOff2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tv_prefs_Visual"
+            android:textAlignment="viewStart"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/textView_prefs_audioOnOff"
+            app:layout_constraintEnd_toStartOf="@+id/switchVisual"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/switchAudio"
+            app:layout_constraintTop_toTopOf="@+id/textView_prefs_audioOnOff" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switchVisual"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:thumb="@drawable/thumb2"
+            android:textOn="@string/switch_textOn"
+            android:textOff="@string/switch_textOff"
+            app:layout_constraintBottom_toBottomOf="@+id/textView_prefs_visualOnOff2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/textView_prefs_visualOnOff2"
+            app:layout_constraintTop_toTopOf="@+id/textView_prefs_visualOnOff2"
+            app:track="@drawable/track2"
+            app:showText="true"/>
 
         <TextView
             android:id="@+id/textView_prefs_EventInterval"
@@ -112,8 +167,8 @@
             android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/textView_prefs_NumberofEvents"
-            app:layout_constraintStart_toStartOf="@+id/textView_prefs_Voice"
-            app:layout_constraintTop_toBottomOf="@+id/textView_prefs_Voice" />
+            app:layout_constraintStart_toStartOf="@+id/textView_prefs_NumberofEvents"
+            app:layout_constraintTop_toBottomOf="@+id/textView_prefs_audioOnOff" />
 
         <EditText
             android:id="@+id/editTextNr_prefs_EventInterval"
@@ -140,7 +195,7 @@
             android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/textView_pref_ValueN"
-            app:layout_constraintStart_toStartOf="@+id/textView_pref_ValueN"
+            app:layout_constraintStart_toStartOf="@+id/textView_pref_theme"
             app:layout_constraintTop_toBottomOf="@+id/textView_prefs_EventInterval" />
 
         <EditText
@@ -154,9 +209,9 @@
             android:minHeight="48dp"
             app:layout_constraintBottom_toBottomOf="@+id/textView_prefs_NumberofEvents"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/textView_prefs_NumberofEvents"
             app:layout_constraintTop_toTopOf="@+id/textView_prefs_NumberofEvents"
+            app:layout_constraintVertical_bias="0.0"
             tools:ignore="TextContrastCheck,DuplicateSpeakableTextCheck" />
 
         <TextView
@@ -168,7 +223,7 @@
             android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/textView_pref_theme"
+            app:layout_constraintStart_toStartOf="@+id/textView_prefs_NumberofEvents"
             app:layout_constraintTop_toBottomOf="@+id/textView_prefs_NumberofEvents" />
 
         <EditText
@@ -177,15 +232,22 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="@string/et_prefs_ValueN"
+            android:importantForAutofill="no"
             android:inputType="number"
             android:minHeight="48dp"
             app:layout_constraintBottom_toBottomOf="@+id/textView_pref_ValueN"
             app:layout_constraintEnd_toEndOf="@+id/editTextNr_prefs_NumberofEvents"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="@+id/editTextNr_prefs_NumberofEvents"
             app:layout_constraintTop_toTopOf="@+id/textView_pref_ValueN"
-            tools:ignore="TextContrastCheck"
-            android:importantForAutofill="no" />
+            tools:ignore="TextContrastCheck" />
+
+        <Button
+            android:id="@+id/button_prefs_Save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_prefs_Save"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
