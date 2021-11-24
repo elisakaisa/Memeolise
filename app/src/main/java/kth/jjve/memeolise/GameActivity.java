@@ -1,4 +1,7 @@
 package kth.jjve.memeolise;
+/*
+This activity is the activity in which the game is played
+ */
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,21 +21,20 @@ import java.io.ObjectInputStream;
 
 public class GameActivity extends AppCompatActivity {
     /*--------------------------- LOG -----------------------*/
-    private static final String LOG_TAG = PrefsActivity.class.getSimpleName();
+    private static final String LOG_TAG = GameActivity.class.getSimpleName();
 
     /*------------------------- CLASSES ---------------------*/
     private Preferences cPreferences;
 
-    private static final String LOG_TAG = MainActivity.class.getSimpleName();
-    //UI
+    /*---------------------------- UI -----------------------*/
     private Button buttonVisual;
     private Button buttonAudio;
 
-    // variables for counting how many times button is pressed
+    /*------------------------- COUNTERS --------------------*/
     public int audioMatchCounter = 0;
     public int visualMatchCounter = 0;
 
-    // tts variables
+    /*--------------------- TEXT TO SPEECH ------------------*/
     private TextToSpeech textToSpeech;
     private static final int utteranceId = 42;
     //TODO might be where we set the voice? to be investigated
@@ -50,22 +52,16 @@ public class GameActivity extends AppCompatActivity {
         getPreferences();
 
         /*-------------- On Click Listener ------------------*/
-        buttonVisual.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                visualMatchCounter++;
-                sayIt("position"); //get "speak failed: not bound to TTS engine", check if works with phone
-                Log.d(LOG_TAG, "position clicked");
-            }
+        buttonVisual.setOnClickListener(v -> {
+            visualMatchCounter++;
+            sayIt("position"); //get "speak failed: not bound to TTS engine", check if works with phone
+            Log.d(LOG_TAG, "position clicked");
         });
 
-        buttonAudio.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                audioMatchCounter++;
-                sayIt("audio");
-                Log.d(LOG_TAG, "audio clicked");
-            }
+        buttonAudio.setOnClickListener(v -> {
+            audioMatchCounter++;
+            sayIt("audio");
+            Log.d(LOG_TAG, "audio clicked");
         });
 
     }
@@ -89,12 +85,9 @@ public class GameActivity extends AppCompatActivity {
         // Initialize the text-to-speech service - we do this initialization
         // in onResume because we shutdown the service in onPause
         textToSpeech = new TextToSpeech(getApplicationContext(),
-                new TextToSpeech.OnInitListener() {
-                    @Override
-                    public void onInit(int status) {
-                        if (status == TextToSpeech.SUCCESS) {
-                            textToSpeech.setLanguage(Locale.UK);
-                        }
+                status -> {
+                    if (status == TextToSpeech.SUCCESS) {
+                        textToSpeech.setLanguage(Locale.UK);
                     }
                 });
     }
@@ -103,7 +96,7 @@ public class GameActivity extends AppCompatActivity {
     private void sayIt(String utterance) {
         // for text to speech
         textToSpeech.speak(utterance, TextToSpeech.QUEUE_FLUSH,
-                null, new String("" + utteranceId));
+                null, "" + utteranceId);
     }
 
   
@@ -135,9 +128,7 @@ public class GameActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(title);
         builder.setMessage(message);
-        builder.setPositiveButton("Ok", new AlertDialog.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-            }
+        builder.setPositiveButton("Ok", (dialog, id) -> {
         });
         return builder.create();
     }

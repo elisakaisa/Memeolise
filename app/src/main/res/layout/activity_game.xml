@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background"
     tools:context=".GameActivity">
 
     <ImageView
@@ -13,7 +14,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/underconstruction" />
+        app:srcCompat="@drawable/underconstruction"
+        android:contentDescription="@string/descr_iv_gameactivity"/>
 
     <kth.jjve.memeolise.game.GameView
         android:layout_width="wrap_content"
@@ -30,7 +32,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="32dp"
-        android:text="Position"
+        android:text="@string/buttonVisual_gameactivity"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/buttonAudioMatch"
         app:layout_constraintHorizontal_bias="0.5"
@@ -40,7 +42,7 @@
         android:id="@+id/buttonAudioMatch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Audio"
+        android:text="@string/buttonAudio_gameactivity"
         app:layout_constraintBottom_toBottomOf="@+id/buttonVisualMatch"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"

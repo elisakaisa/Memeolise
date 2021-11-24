@@ -24,18 +24,78 @@
 
         <include
             android:id="@+id/main_toolbar"
-            layout="@layout/toolbar"/>
+            layout="@layout/toolbar" />
 
         <Button
             android:id="@+id/buttonStart"
             style="@style/MyButton"
-            android:layout_width="206dp"
-            android:layout_height="235dp"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
             android:text="@string/buttonStart"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/main_toolbar" />
+
+        <ImageView
+            android:id="@+id/IV_home_visualOn"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/IV_home_audioOff"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/buttonStart"
+            app:srcCompat="@drawable/ic_baseline_visibility_24"
+            android:contentDescription="@string/visual_on" />
+
+        <ImageView
+            android:id="@+id/IV_home_visualOff"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/IV_home_visualOn"
+            app:layout_constraintEnd_toEndOf="@+id/IV_home_visualOn"
+            app:layout_constraintStart_toStartOf="@+id/IV_home_visualOn"
+            app:layout_constraintTop_toTopOf="@+id/IV_home_visualOn"
+            app:srcCompat="@drawable/ic_baseline_visibility_off_24"
+            android:contentDescription="@string/visual_off" />
+
+        <ImageView
+            android:id="@+id/IV_home_audioOff"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/IV_home_visualOn"
+            app:layout_constraintTop_toBottomOf="@+id/buttonStart"
+            app:srcCompat="@drawable/ic_baseline_volume_off_24"
+            android:contentDescription="@string/audio_off" />
+
+        <ImageView
+            android:id="@+id/IV_home_audioOn"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="@+id/IV_home_audioOff"
+            app:layout_constraintEnd_toEndOf="@+id/IV_home_audioOff"
+            app:layout_constraintStart_toStartOf="@+id/IV_home_audioOff"
+            app:layout_constraintTop_toTopOf="@+id/IV_home_audioOff"
+            app:srcCompat="@drawable/ic_baseline_volume_up_24"
+            android:contentDescription="@string/audio_on" />
+
+        <ImageView
+            android:id="@+id/buttonHelp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/main_toolbar"
+            app:srcCompat="@drawable/ic_baseline_question_mark_24"
+            android:contentDescription="@string/desc_help"
+            android:clickable="true"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

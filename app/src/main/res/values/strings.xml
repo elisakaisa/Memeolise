@@ -18,5 +18,19 @@
     <string name="switch_textOff">Off</string>
     <string name="switch_textOn">On</string>
     <string name="button_prefs_Save">Save</string>
+    <string name="audio_on">audio ON</string>
+    <string name="audio_off">audio Off</string>
+    <string name="visual_off">visual Off</string>
+    <string name="visual_on">visual On</string>
+    <string name="desc_help">button that is gonna show explanation on the game</string>
+    <string name="dialog_help_message">You are presented by a sequence of stimuli.
+    The task you have is to determine whether the stimulus matches the stimulus of n steps
+    earlier. You do this by pressing the button. \n\nBy altering the preferences you can choose
+    to have visual and/or audio stimuli, the value of n and the amount of events that you will be shown.
+    \nHave fun!</string>
+    <string name="dialog_help_title">Game Explanation</string>
+    <string name="descr_iv_gameactivity">under construction</string>
+    <string name="buttonVisual_gameactivity">Position</string>
+    <string name="buttonAudio_gameactivity">Audio</string>
 
 </resources>

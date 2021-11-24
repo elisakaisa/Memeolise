@@ -1,4 +1,8 @@
 package kth.jjve.memeolise;
+/*
+This class stores the preferences and is the class
+that will be serialised in the serialiser.
+ */
 
 import java.io.Serializable;
 
