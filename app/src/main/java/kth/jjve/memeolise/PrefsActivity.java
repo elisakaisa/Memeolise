@@ -1,4 +1,9 @@
 package kth.jjve.memeolise;
+/*
+This activity allows the user to input
+preferences which will be saved to a locally stored
+preferences file
+ */
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -25,7 +30,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Objects;
 
 public class PrefsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -38,14 +42,14 @@ public class PrefsActivity extends AppCompatActivity implements NavigationView.O
     private EditText et1, et2, et3;
 
     /*-------------------------- PREFS ----------------------*/
-    private Preferences cPreferences; //Object of the class Preferences
-    private int cTheme; //Todo: add the theme stuff to this
-    private int cVoice = 42; //Integer that decides which voice is being used
-    private boolean cAudio = true; //Boolean that decides if audio is on or off
-    private boolean cVisual = true; //Boolean that decides if visuals are on or off
-    private int cEventInterval = 50; //Interval between events in game
-    private int cNumberofEvents = 10; //Number of events the user plays
-    private int cValueofN = 1; //User can decide n
+    private Preferences cPreferences;   //Object of the class Preferences
+    private int cTheme;                 //Todo: add the theme stuff to this
+    private int cVoice = 42;            //Integer that decides which voice is being used
+    private boolean cAudio = true;      //Boolean that decides if audio is on or off
+    private boolean cVisual = true;     //Boolean that decides if visuals are on or off
+    private int cEventInterval = 50;    //Interval between events in game
+    private int cNumberofEvents = 10;   //Number of events the user plays
+    private int cValueofN = 1;          //User can decide n
 
     /*--------------------------- LOG -----------------------*/
     private static final String LOG_TAG = PrefsActivity.class.getSimpleName();
@@ -86,61 +90,30 @@ public class PrefsActivity extends AppCompatActivity implements NavigationView.O
         getPreferences();
 
         /*-------------------- onClickListeners ------------------*/
-        button1.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                cTheme = 1;
+        button1.setOnClickListener(v -> cTheme = 1);
+
+        button2.setOnClickListener(v -> cTheme = 2);
+
+        button3.setOnClickListener(v -> cTheme = 3);
+
+        buttonSave.setOnClickListener(v -> {
+            setPreferences();
+            Toast toast = Toast.makeText(getApplicationContext(), "Preferences saved",
+                    Toast.LENGTH_SHORT);
+            toast.show();
+        });
+
+        switch1.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked){
+                cVoice = 42;
+            }else{
+                cVoice = 32; //Todo: find the integer for a different voice
             }
         });
 
-        button2.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                cTheme = 2;
-            }
-        });
+        switch2.setOnCheckedChangeListener((buttonView, isChecked) -> cAudio = isChecked);
 
-        button3.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                cTheme = 3;
-            }
-        });
-
-        buttonSave.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                setPreferences();
-                Toast toast = Toast.makeText(getApplicationContext(), "Preferences saved",
-                        Toast.LENGTH_SHORT);
-                toast.show(); //Todo: find out why this toast doesn't show
-            }
-        });
-
-        switch1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked){
-                    cVoice = 42;
-                }else{
-                    cVoice = 42; //Todo: find the integer for a different voice
-                }
-            }
-        });
-
-        switch2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                cAudio = isChecked;
-            }
-        });
-
-        switch3.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                cVisual = isChecked;
-            }
-        });
+        switch3.setOnCheckedChangeListener((buttonView, isChecked) -> cVisual = isChecked);
     }
 
     @Override
@@ -148,13 +121,6 @@ public class PrefsActivity extends AppCompatActivity implements NavigationView.O
         super.onResume();
         navigationView2.setCheckedItem(R.id.nav_preferences);
         Log.i(LOG_TAG, "onResume happens");
-        //getPreferences(); //Todo: find out if this is needed
-    }
-
-    @Override
-    protected void onPause(){
-        Log.i(LOG_TAG, "onPause happens");
-        super.onPause();
     }
 
     @Override
@@ -182,6 +148,8 @@ public class PrefsActivity extends AppCompatActivity implements NavigationView.O
     }
 
     private void setPreferences(){
+        // Method to set the preferences and serialise them to the
+        // locally stored preferences file
         cEventInterval = Integer.parseInt(et1.getText().toString());
         cNumberofEvents = Integer.parseInt(et2.getText().toString());
         cValueofN = Integer.parseInt(et3.getText().toString());
@@ -191,6 +159,8 @@ public class PrefsActivity extends AppCompatActivity implements NavigationView.O
     }
 
     private void getPreferences() {
+        // Method that gets the current preferences
+        // and updates the ui accordingly
         deserialisePreferences();
 
         if (cPreferences!=null){
@@ -219,6 +189,7 @@ public class PrefsActivity extends AppCompatActivity implements NavigationView.O
 
     private void serialisePreferences(int theme, int voice, boolean audio, boolean visual,
                                       int eventInterval, int numberofEvents, int valueofN){
+        // Method that serialises the preferences
         Preferences prefs = new Preferences(theme, voice, audio, visual, eventInterval, numberofEvents, valueofN);
         try{
             FileOutputStream fos = openFileOutput("preferences.ser", Context.MODE_PRIVATE);
@@ -238,6 +209,7 @@ public class PrefsActivity extends AppCompatActivity implements NavigationView.O
     }
 
     private void deserialisePreferences(){
+        // Method to deserialise preferences
         try{
             FileInputStream fin = openFileInput("preferences.ser");
 
@@ -255,6 +227,5 @@ public class PrefsActivity extends AppCompatActivity implements NavigationView.O
             e.printStackTrace();
         }
     }
-
 
 }
