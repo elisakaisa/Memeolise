@@ -9,26 +9,39 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.speech.tts.TextToSpeech;
 import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Locale;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 public class GameActivity extends AppCompatActivity {
     /*--------------------------- LOG -----------------------*/
     private static final String LOG_TAG = GameActivity.class.getSimpleName();
 
-    /*------------------------- CLASSES ---------------------*/
+    /*------------------------- PREFS ---------------------*/
     private Preferences cPreferences;
+    private int maxEventNo;
+    private long eventInterval;
+
+    /*------------------------ TIMER ------------------------*/
+    private Timer eventTimer = null;
+    private Handler handler;
+    private int eventNo;
 
     /*---------------------------- UI -----------------------*/
     private Button buttonVisual;
     private Button buttonAudio;
+    private TextView eventNoView;
 
     /*------------------------- COUNTERS --------------------*/
     public int audioMatchCounter = 0;
@@ -47,6 +60,7 @@ public class GameActivity extends AppCompatActivity {
         /*---------------------- Hooks ----------------------*/
         buttonVisual = findViewById(R.id.buttonVisualMatch);
         buttonAudio = findViewById(R.id.buttonAudioMatch);
+        eventNoView = (TextView) findViewById(R.id.textView_game_eventNo);
       
         /*----------------- Preferences ---------------------*/
         getPreferences();
@@ -64,18 +78,25 @@ public class GameActivity extends AppCompatActivity {
             Log.d(LOG_TAG, "audio clicked");
         });
 
+        /*---------------- START GAME ----------------------*/
+        handler = new Handler();
+
+        boolean started = startTimer();
+        if (!started) {
+            Toast.makeText(this, "Task already running", Toast.LENGTH_SHORT).show();
+        }
     }
   
   
     @Override
     protected void onPause() {
-    // NB! Cancel the current and queued utterances, then shut down the service to
-    // de-allocate resources
+    // cancels the text to speech and the timer to save resources
         if (textToSpeech != null) {
             textToSpeech.stop();
             textToSpeech.shutdown();
         }
         super.onPause();
+        cancelTimer();
     }
 
   
@@ -101,6 +122,7 @@ public class GameActivity extends AppCompatActivity {
 
   
     private void getPreferences(){
+        // Method to get the needed preferences
         try{
             FileInputStream fin = openFileInput("preferences.ser");
 
@@ -118,19 +140,45 @@ public class GameActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        //todo: expand so that needed preferences are automatically taken if cPreferences is not null
-    }
-  
-
-    /*--------Alert dialogs (ie game finished)-----*/
-    // TODO check if we can input sth in alert dialog (popup for players name)
-    private AlertDialog createMsgDialog(String title, String message) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(title);
-        builder.setMessage(message);
-        builder.setPositiveButton("Ok", (dialog, id) -> {
-        });
-        return builder.create();
+        if (cPreferences != null){
+            maxEventNo = cPreferences.getNumberofEvents();
+            eventInterval = (long) cPreferences.getEventInterval();
+        }
     }
 
+    private class EventTimerTask extends TimerTask{
+        // Class to run the game, based on the timer
+        @Override
+        public void run() {
+            eventNo++;
+            Log.i("EventTask", "Event number " + eventNo);
+            handler.post(() -> eventNoView.setText(String.valueOf(eventNo)));
+            if (eventNo >= maxEventNo){
+                cancelTimer();
+            }
+        }
+    }
+
+    private boolean startTimer(){
+        // Method to start the timer
+        if (eventTimer == null){
+            eventNo = 0;
+            eventTimer = new Timer();
+            EventTimerTask eTT = new EventTimerTask();
+            eventTimer.schedule(eTT, 3000, eventInterval);
+            return true;
+        }
+        return false;
+    }
+
+    private void cancelTimer(){
+        //Method to cancel the timer
+        if (eventTimer != null){
+            eventTimer.cancel();
+            eventTimer = null;
+            Log.i("eventTask", "timer canceled");
+            handler.post(() -> Toast.makeText(getApplicationContext(), "Timer stopped", Toast.LENGTH_SHORT).show());
+            //Todo: replace toast above by a Dialog that allows the input of some text (Jitse can do that :) )
+        }
+    }
 }

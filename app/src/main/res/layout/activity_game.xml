@@ -18,6 +18,7 @@
         android:contentDescription="@string/descr_iv_gameactivity"/>
 
     <kth.jjve.memeolise.game.GameView
+        android:id="@+id/gameView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -48,5 +49,30 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/buttonVisualMatch"
         app:layout_constraintTop_toTopOf="@+id/buttonVisualMatch" />
+
+    <TextView
+        android:id="@+id/textView_game_eventNoText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/text_before_eventNo"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/gameView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.796"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <TextView
+        android:id="@+id/textView_game_eventNo"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="16dp"
+        android:text=""
+        android:textAlignment="viewStart"
+        app:layout_constraintBottom_toBottomOf="@+id/textView_game_eventNoText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textView_game_eventNoText"
+        app:layout_constraintTop_toTopOf="@+id/textView_game_eventNoText" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
