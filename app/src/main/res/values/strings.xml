@@ -32,5 +32,7 @@
     <string name="descr_iv_gameactivity">under construction</string>
     <string name="buttonVisual_gameactivity">Position</string>
     <string name="buttonAudio_gameactivity">Audio</string>
+    <string name="text_before_eventNo">Event number:</string>
+    <string name="resultdialog_name">Name</string>
 
 </resources>

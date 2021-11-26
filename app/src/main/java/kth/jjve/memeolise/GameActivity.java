@@ -23,8 +23,10 @@ import java.io.ObjectInputStream;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import kth.jjve.memeolise.game.ResultsDialog;
 
-public class GameActivity extends AppCompatActivity {
+
+public class GameActivity extends AppCompatActivity implements ResultsDialog.ResultsDialogListener {
     /*--------------------------- LOG -----------------------*/
     private static final String LOG_TAG = GameActivity.class.getSimpleName();
 
@@ -51,6 +53,9 @@ public class GameActivity extends AppCompatActivity {
     private TextToSpeech textToSpeech;
     private static final int utteranceId = 42;
     //TODO might be where we set the voice? to be investigated
+
+    /*------------------------ RESULTS ----------------------*/
+    private String resultName;
 
 
     @Override
@@ -146,6 +151,11 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void applyName(String name) {
+        resultName = name;
+    }
+
     private class EventTimerTask extends TimerTask{
         // Class to run the game, based on the timer
         @Override
@@ -155,8 +165,14 @@ public class GameActivity extends AppCompatActivity {
             handler.post(() -> eventNoView.setText(String.valueOf(eventNo)));
             if (eventNo >= maxEventNo){
                 cancelTimer();
+                handler.post(GameActivity.this::openResultsDialog);
             }
         }
+    }
+
+    private void openResultsDialog() {
+        ResultsDialog resultsDialog = new ResultsDialog();
+        resultsDialog.show(getSupportFragmentManager(), "results dialog");
     }
 
     private boolean startTimer(){
@@ -181,4 +197,6 @@ public class GameActivity extends AppCompatActivity {
             //Todo: replace toast above by a Dialog that allows the input of some text (Jitse can do that :) )
         }
     }
+
+    //Todo: make a serialiser that saves the result
 }
