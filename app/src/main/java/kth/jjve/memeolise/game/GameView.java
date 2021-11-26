@@ -8,10 +8,11 @@ import android.graphics.Paint;
 
 import android.util.AttributeSet; //needed to have preview!!!!
 import android.view.View;
+import android.view.ViewGroup;
 
 
 
-public class GameView extends View {
+public class GameView extends ViewGroup {
 
     private Paint paint;
 
@@ -28,6 +29,7 @@ public class GameView extends View {
         paint = new Paint(); //Paint provides methods to define that line's color
         paint.setAntiAlias(true);
         paint.setStyle(Paint.Style.STROKE);
+        setWillNotDraw(false); //without this line -> no grid in viewGroup
     }
 
     @Override
@@ -60,4 +62,11 @@ public class GameView extends View {
                     cellSize * step, 0, cellSize * step, boardSize, paint);
         }
     }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+
+    }
+
+
 }
