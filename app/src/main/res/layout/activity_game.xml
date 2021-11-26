@@ -7,26 +7,17 @@
     android:background="@drawable/background"
     tools:context=".GameActivity">
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="300dp"
-        android:layout_height="200dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/underconstruction"
-        android:contentDescription="@string/descr_iv_gameactivity"/>
-
     <kth.jjve.memeolise.game.GameView
         android:id="@+id/gameView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@+id/buttonVisualMatch"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView_game_eventNoText" />
 
     <Button
         android:id="@+id/buttonVisualMatch"
@@ -37,7 +28,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/buttonAudioMatch"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/gameView" />
 
     <Button
         android:id="@+id/buttonAudioMatch"
@@ -54,14 +46,14 @@
         android:id="@+id/textView_game_eventNoText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
         android:text="@string/text_before_eventNo"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/gameView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.796"
+        app:layout_constraintHorizontal_bias="0.786"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textView_game_eventNo"
@@ -74,5 +66,42 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textView_game_eventNoText"
         app:layout_constraintTop_toTopOf="@+id/textView_game_eventNoText" />
+
+    <ImageView
+        android:id="@+id/IV_game_countdown3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.471"
+        app:srcCompat="@drawable/countdown3"
+        android:contentDescription="@string/descr_cd3"/>
+
+    <ImageView
+        android:id="@+id/IV_game_countdown2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/IV_game_countdown3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/IV_game_countdown3"
+        app:srcCompat="@drawable/countdown2"
+        android:contentDescription="@string/descr_cd2"/>
+
+    <ImageView
+        android:id="@+id/IV_game_countdown1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/IV_game_countdown3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/IV_game_countdown3"
+        app:srcCompat="@drawable/countdown1"
+        android:contentDescription="@string/descr_cd1"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

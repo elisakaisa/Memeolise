@@ -34,5 +34,8 @@
     <string name="buttonAudio_gameactivity">Audio</string>
     <string name="text_before_eventNo">Event number:</string>
     <string name="resultdialog_name">Name</string>
+    <string name="descr_cd3">countdown3</string>
+    <string name="descr_cd2">countdown 2</string>
+    <string name="descr_cd1">countdown 1</string>
 
 </resources>
