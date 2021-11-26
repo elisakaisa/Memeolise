@@ -16,12 +16,13 @@ public class Preferences implements Serializable {
     private final int pValueofN;
 
     public Preferences(int theme, int voice, boolean audio, boolean visual,
-                       int eventInterval, int numberofEvents, int valueofN){
+                       double eventInterval, int numberofEvents, int valueofN){
         pTheme = theme;
         pVoice = voice;
         pAudio = audio;
         pVisual = visual;
-        pEventInterval = eventInterval;
+        double intermediate = eventInterval * 1000;
+        pEventInterval = (int) intermediate;
         pNumberofEvents = numberofEvents;
         pValueofN = valueofN;
     }

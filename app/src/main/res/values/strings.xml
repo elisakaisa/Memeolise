@@ -6,7 +6,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="tv_prefs_NumberofEvents">Number of \nEvents</string>
     <string name="tv_prefs_ValueofN">Value of \n n</string>
-    <string name="et_prefs_hintEventInterval">[ms]</string>
+    <string name="et_prefs_hintEventInterval">[s]</string>
     <string name="tv_prefs_Theme">Theme</string>
     <string name="tv_prefs_Voice">Voice</string>
     <string name="tv_prefs_EventInterval">Event \ninterval</string>
@@ -32,5 +32,10 @@
     <string name="descr_iv_gameactivity">under construction</string>
     <string name="buttonVisual_gameactivity">Position</string>
     <string name="buttonAudio_gameactivity">Audio</string>
+    <string name="text_before_eventNo">Event number:</string>
+    <string name="resultdialog_name">Name</string>
+    <string name="descr_cd3">countdown3</string>
+    <string name="descr_cd2">countdown 2</string>
+    <string name="descr_cd1">countdown 1</string>
 
 </resources>

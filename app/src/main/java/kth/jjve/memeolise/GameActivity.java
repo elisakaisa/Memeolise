@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.speech.tts.TextToSpeech;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,8 +24,10 @@ import java.io.ObjectInputStream;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import kth.jjve.memeolise.game.ResultsDialog;
 
-public class GameActivity extends AppCompatActivity {
+
+public class GameActivity extends AppCompatActivity implements ResultsDialog.ResultsDialogListener {
     /*--------------------------- LOG -----------------------*/
     private static final String LOG_TAG = GameActivity.class.getSimpleName();
 
@@ -37,11 +40,13 @@ public class GameActivity extends AppCompatActivity {
     private Timer eventTimer = null;
     private Handler handler;
     private int eventNo;
+    private int countdownNo;
 
     /*---------------------------- UI -----------------------*/
     private Button buttonVisual;
     private Button buttonAudio;
     private TextView eventNoView;
+    private ImageView countDown1, countDown2, countDown3;
 
     /*------------------------- COUNTERS --------------------*/
     public int audioMatchCounter = 0;
@@ -52,6 +57,9 @@ public class GameActivity extends AppCompatActivity {
     private static final int utteranceId = 42;
     //TODO might be where we set the voice? to be investigated
 
+    /*------------------------ RESULTS ----------------------*/
+    private String resultName;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +69,9 @@ public class GameActivity extends AppCompatActivity {
         buttonVisual = findViewById(R.id.buttonVisualMatch);
         buttonAudio = findViewById(R.id.buttonAudioMatch);
         eventNoView = (TextView) findViewById(R.id.textView_game_eventNo);
+        countDown1 = (ImageView) findViewById(R.id.IV_game_countdown1);
+        countDown2 = (ImageView) findViewById(R.id.IV_game_countdown2);
+        countDown3 = (ImageView) findViewById(R.id.IV_game_countdown3);
       
         /*----------------- Preferences ---------------------*/
         getPreferences();
@@ -146,26 +157,77 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void applyName(String name) {
+        resultName = name;
+    }
+
     private class EventTimerTask extends TimerTask{
         // Class to run the game, based on the timer
         @Override
         public void run() {
-            eventNo++;
-            Log.i("EventTask", "Event number " + eventNo);
-            handler.post(() -> eventNoView.setText(String.valueOf(eventNo)));
-            if (eventNo >= maxEventNo){
-                cancelTimer();
+            if (countdownNo<=3) {
+                Log.i("EventTask", "In countdown");
+                publishCountdown(countdownNo);
+                countdownNo++;
+            } else {
+                eventNo++;
+                Log.i("EventTask", "Event number " + eventNo);
+                handler.post(() -> eventNoView.setText(String.valueOf(eventNo)));
+                if (eventNo >= maxEventNo) {
+                    cancelTimer();
+                    handler.post(GameActivity.this::openResultsDialog);
+                }
             }
         }
+    }
+
+    private void publishCountdown(int cd) {
+        switch(cd){
+            case 0:
+                handler.post(() -> {
+                    countDown3.setVisibility(View.VISIBLE);
+                    countDown2.setVisibility(View.INVISIBLE);
+                    countDown1.setVisibility(View.INVISIBLE);
+                });
+                break;
+            case 1:
+                handler.post(() -> {
+                    countDown3.setVisibility(View.INVISIBLE);
+                    countDown2.setVisibility(View.VISIBLE);
+                    countDown1.setVisibility(View.INVISIBLE);
+                });
+                break;
+            case 2:
+                handler.post(() -> {
+                    countDown3.setVisibility(View.INVISIBLE);
+                    countDown2.setVisibility(View.INVISIBLE);
+                    countDown1.setVisibility(View.VISIBLE);
+                });
+                break;
+            case 3:
+                handler.post(() -> {
+                    countDown3.setVisibility(View.INVISIBLE);
+                    countDown2.setVisibility(View.INVISIBLE);
+                    countDown1.setVisibility(View.INVISIBLE);
+                });
+                break;
+        }
+    }
+
+    private void openResultsDialog() {
+        ResultsDialog resultsDialog = new ResultsDialog();
+        resultsDialog.show(getSupportFragmentManager(), "results dialog");
     }
 
     private boolean startTimer(){
         // Method to start the timer
         if (eventTimer == null){
+            countdownNo = 0;
             eventNo = 0;
             eventTimer = new Timer();
             EventTimerTask eTT = new EventTimerTask();
-            eventTimer.schedule(eTT, 3000, eventInterval);
+            eventTimer.schedule(eTT, 0, eventInterval);
             return true;
         }
         return false;
@@ -181,4 +243,6 @@ public class GameActivity extends AppCompatActivity {
             //Todo: replace toast above by a Dialog that allows the input of some text (Jitse can do that :) )
         }
     }
+
+    //Todo: make a serialiser that saves the result
 }
