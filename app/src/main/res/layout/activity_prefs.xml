@@ -177,7 +177,7 @@
             android:ems="10"
             android:hint="@string/et_prefs_hintEventInterval"
             android:importantForAutofill="no"
-            android:inputType="number"
+            android:inputType="numberDecimal"
             android:minHeight="48dp"
             app:layout_constraintBottom_toBottomOf="@+id/textView_prefs_EventInterval"
             app:layout_constraintEnd_toEndOf="@+id/editTextNr_prefs_NumberofEvents"
