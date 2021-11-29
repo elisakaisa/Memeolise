@@ -24,6 +24,7 @@ import java.io.ObjectInputStream;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import kth.jjve.memeolise.game.GameLogic;
 import kth.jjve.memeolise.game.ResultsDialog;
 
 
@@ -35,6 +36,9 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
     private Preferences cPreferences;
     private int maxEventNo;
     private long eventInterval;
+    private boolean audioOn;
+    private boolean visualOn;
+    private int n;
 
     /*------------------------ TIMER ------------------------*/
     private Timer eventTimer = null;
@@ -49,8 +53,11 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
     private ImageView countDown1, countDown2, countDown3;
 
     /*------------------------- COUNTERS --------------------*/
-    public int audioMatchCounter = 0;
-    public int visualMatchCounter = 0;
+    private boolean visualClick;
+    private boolean audioClick;
+
+    /*----------------------- GAME --------------------------*/
+    private GameLogic gameLogic;
 
     /*--------------------- TEXT TO SPEECH ------------------*/
     private TextToSpeech textToSpeech;
@@ -78,19 +85,18 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
 
         /*-------------- On Click Listener ------------------*/
         buttonVisual.setOnClickListener(v -> {
-            visualMatchCounter++;
-            sayIt("position"); //get "speak failed: not bound to TTS engine", check if works with phone
+            visualClick = true;
             Log.d(LOG_TAG, "position clicked");
         });
 
         buttonAudio.setOnClickListener(v -> {
-            audioMatchCounter++;
-            sayIt("audio");
+            audioClick = true;
             Log.d(LOG_TAG, "audio clicked");
         });
 
         /*---------------- START GAME ----------------------*/
         handler = new Handler();
+        gameLogic = GameLogic.getInstance(); //singleton
 
         boolean started = startTimer();
         if (!started) {
@@ -154,6 +160,9 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
         if (cPreferences != null){
             maxEventNo = cPreferences.getNumberofEvents();
             eventInterval = (long) cPreferences.getEventInterval();
+            audioOn = cPreferences.getAudio();
+            visualOn = cPreferences.getVisual();
+            n = cPreferences.getValueofN();
         }
     }
 
@@ -171,8 +180,10 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
                 publishCountdown(countdownNo);
                 countdownNo++;
             } else {
+                resetClicks();
                 eventNo++;
                 Log.i("EventTask", "Event number " + eventNo);
+                eventRunner(eventNo);
                 handler.post(() -> eventNoView.setText(String.valueOf(eventNo)));
                 if (eventNo >= maxEventNo) {
                     cancelTimer();
@@ -180,6 +191,23 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
                 }
             }
         }
+    }
+
+    private void eventRunner(int eventNumber){
+        if (audioOn){
+            String letter = gameLogic.returnRandomLetter();
+            sayIt(letter);
+            Log.i("EventHappen", "Letter is " + letter);
+            // Todo: run the audio part
+        }
+        if (visualOn){
+            //Todo: run the visual part
+        }
+    }
+
+    private void resetClicks(){
+        audioClick = false;
+        visualClick = false;
     }
 
     private void publishCountdown(int cd) {
@@ -240,7 +268,6 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
             eventTimer = null;
             Log.i("eventTask", "timer canceled");
             handler.post(() -> Toast.makeText(getApplicationContext(), "Timer stopped", Toast.LENGTH_SHORT).show());
-            //Todo: replace toast above by a Dialog that allows the input of some text (Jitse can do that :) )
         }
     }
 
