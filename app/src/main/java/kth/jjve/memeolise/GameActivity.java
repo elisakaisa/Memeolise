@@ -49,12 +49,13 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
     /*---------------------------- UI -----------------------*/
     private Button buttonVisual;
     private Button buttonAudio;
-    private TextView eventNoView;
+    private TextView eventNoView, scoreView;
     private ImageView countDown1, countDown2, countDown3;
 
     /*------------------------- COUNTERS --------------------*/
     private boolean visualClick;
-    private boolean audioClick;
+    private boolean audioScored;
+    private int score;
 
     /*----------------------- GAME --------------------------*/
     private GameLogic gameLogic;
@@ -75,10 +76,11 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
         /*---------------------- Hooks ----------------------*/
         buttonVisual = findViewById(R.id.buttonVisualMatch);
         buttonAudio = findViewById(R.id.buttonAudioMatch);
-        eventNoView = (TextView) findViewById(R.id.textView_game_eventNo);
-        countDown1 = (ImageView) findViewById(R.id.IV_game_countdown1);
-        countDown2 = (ImageView) findViewById(R.id.IV_game_countdown2);
-        countDown3 = (ImageView) findViewById(R.id.IV_game_countdown3);
+        eventNoView = findViewById(R.id.textView_game_eventNo);
+        scoreView = findViewById(R.id.textView_game_score);
+        countDown1 = findViewById(R.id.IV_game_countdown1);
+        countDown2 = findViewById(R.id.IV_game_countdown2);
+        countDown3 = findViewById(R.id.IV_game_countdown3);
       
         /*----------------- Preferences ---------------------*/
         getPreferences();
@@ -90,7 +92,18 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
         });
 
         buttonAudio.setOnClickListener(v -> {
-            audioClick = true;
+            int currentEvent = eventNo; // Todo: fix bug of crash on end click
+            //Todo: discovered bug with more events, clicking keeps adding scores until it doesn't
+            //Todo: change this function to the other thread
+            if (currentEvent > n && currentEvent <= maxEventNo){
+                audioScored = gameLogic.checkAudioScored(n, currentEvent);
+                if (audioScored){
+                    score++;
+                    scoreView.setText(String.valueOf(score));
+                }
+            } else {
+                Toast.makeText(this, "Not clickable", Toast.LENGTH_SHORT).show();
+            }
             Log.d(LOG_TAG, "audio clicked");
         });
 
@@ -180,14 +193,17 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
                 publishCountdown(countdownNo);
                 countdownNo++;
             } else {
-                resetClicks();
                 eventNo++;
+                resetClicks();
+                if (eventNo < maxEventNo){
                 Log.i("EventTask", "Event number " + eventNo);
                 eventRunner(eventNo);
                 handler.post(() -> eventNoView.setText(String.valueOf(eventNo)));
-                if (eventNo >= maxEventNo) {
+                } else if (eventNo > maxEventNo) {
                     cancelTimer();
                     handler.post(GameActivity.this::openResultsDialog);
+                } else {
+                    handler.post(() -> eventNoView.setText(String.valueOf(eventNo)));
                 }
             }
         }
@@ -206,8 +222,8 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
     }
 
     private void resetClicks(){
-        audioClick = false;
         visualClick = false;
+        audioScored = false;
     }
 
     private void publishCountdown(int cd) {
@@ -271,5 +287,6 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
         }
     }
 
+    //Todo: make a maximum score checker at the end of the game
     //Todo: make a serialiser that saves the result
 }

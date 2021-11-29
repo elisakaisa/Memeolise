@@ -6,14 +6,14 @@ import java.util.List;
 import java.util.Random;
 
 public class GameLogic {
-    private final List<String> letterList = Arrays.asList("a", "b","c", "d");
+    private final List<String> letterList = Arrays.asList("a", "b"); //Todo: decide how many letters we want to have
     private final List<Integer> positionList = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9);
-    private List<String> usedLetters = new ArrayList<String>();
-    private List<Integer> usedPositions = new ArrayList<Integer>();
+    private List<String> usedLetters = new ArrayList<>();
+    private List<Integer> usedPositions = new ArrayList<>();
 
     public void reset(){
-        List<String> usedLetters = new ArrayList<String>();
-        List<Integer> usedPositions = new ArrayList<Integer>();
+        List<String> usedLetters = new ArrayList<>();
+        List<Integer> usedPositions = new ArrayList<>();
     }
 
     public String returnRandomLetter(){
@@ -21,6 +21,7 @@ public class GameLogic {
         // Returns the letter and appends it to usedLetters
         Random rand = new Random();
         String letter = letterList.get(rand.nextInt(letterList.size()));
+//        String letter = "a";
         usedLetters.add(letter);
 
         return letter;
@@ -41,9 +42,11 @@ public class GameLogic {
         return (usedPositions.get(eventNo-1).equals(usedPositions.get(eventNo - n -1)) && visualPress);
     }
 
-    public boolean checkAudioScored(boolean audioPress, int n, int eventNo){
+    public boolean checkAudioScored(int n, int eventNo){
         //Function to check if the user has scored on the audio
-        return (usedLetters.get(eventNo-1).equals(usedLetters.get(eventNo - n - 1)) && audioPress);
+        String a = usedLetters.get(eventNo-1);
+        String b = usedLetters.get(eventNo - n - 1);
+        return (a.equals(b));
     }
 
     public boolean checkCombinedScored(boolean audioPress, boolean visualPress, int n, int eventNo){
