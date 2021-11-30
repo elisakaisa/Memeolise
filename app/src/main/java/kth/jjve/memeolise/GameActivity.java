@@ -25,6 +25,7 @@ import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 
 import kth.jjve.memeolise.game.GameView;
+import kth.jjve.memeolise.utils.UtilTextToSpeech;
 
 
 public class GameActivity extends AppCompatActivity {
@@ -72,13 +73,13 @@ public class GameActivity extends AppCompatActivity {
         /*-------------- On Click Listener ------------------*/
         buttonVisual.setOnClickListener(v -> {
             visualMatchCounter++;
-            sayIt("position");
+            UtilTextToSpeech.sayIt("position");
             Log.d(LOG_TAG, "position clicked");
         });
 
         buttonAudio.setOnClickListener(v -> {
             audioMatchCounter++;
-            sayIt("audio");
+            UtilTextToSpeech.sayIt("audio");
             Log.d(LOG_TAG, "audio clicked");
         });
 
@@ -89,10 +90,7 @@ public class GameActivity extends AppCompatActivity {
     protected void onPause() {
     // NB! Cancel the current and queued utterances, then shut down the service to
     // de-allocate resources
-        if (textToSpeech != null) {
-            textToSpeech.stop();
-            textToSpeech.shutdown();
-        }
+        UtilTextToSpeech.shutdown();
         super.onPause();
     }
 
@@ -102,19 +100,8 @@ public class GameActivity extends AppCompatActivity {
         super.onResume();
         // Initialize the text-to-speech service - we do this initialization
         // in onResume because we shutdown the service in onPause
-        textToSpeech = new TextToSpeech(getApplicationContext(),
-                status -> {
-                    if (status == TextToSpeech.SUCCESS) {
-                        textToSpeech.setLanguage(Locale.UK);
-                    }
-                });
-    }
+        UtilTextToSpeech.initialize(getApplicationContext());
 
-
-    private void sayIt(String utterance) {
-        // for text to speech
-        textToSpeech.speak(utterance, TextToSpeech.QUEUE_FLUSH,
-                null, "" + utteranceId);
     }
 
   
