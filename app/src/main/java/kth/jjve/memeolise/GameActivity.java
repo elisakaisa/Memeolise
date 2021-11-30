@@ -38,7 +38,7 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
     private long eventInterval;
     private boolean audioOn;
     private boolean visualOn;
-    private int n;
+    private int n;                  // chosen n of the user
 
     /*------------------------ TIMER ------------------------*/
     private Timer eventTimer = null;
@@ -64,7 +64,6 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
     /*--------------------- TEXT TO SPEECH ------------------*/
     private TextToSpeech textToSpeech;
     private static final int utteranceId = 42;
-    //TODO might be where we set the voice? to be investigated
 
     /*------------------------ RESULTS ----------------------*/
     private String resultName;
@@ -238,7 +237,7 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
             scoreChecker = gameLogic.checkCombinedScored(n, eventNo, audioClick, visualClick);
         }
 
-        if (scoreChecker == -1){ //Todo: move to a method somewhere else
+        if (scoreChecker == -1){
             // both are incorrect
             // Todo: display something to show that something has not been noticed
 
@@ -325,4 +324,5 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
     //Todo: make a maximum score checker at the end of the game
     //Todo: make a serialiser that saves the result
     //Todo: go back to homescreen after saving the result
+    //Todo: add a safety for when both audio and visual have been turned off
 }
