@@ -103,19 +103,20 @@ public class PrefsActivity extends AppCompatActivity implements NavigationView.O
             Toast toast = Toast.makeText(getApplicationContext(), "Preferences saved",
                     Toast.LENGTH_SHORT);
             toast.show();
+            UtilTextToSpeech.sayIt("Preferences saved");
         });
 
         switch1.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            //TODO: take Elisa's political crap away before handing in :D
             if (isChecked){
                 cVoice = 42;
                 Toast toast = Toast.makeText(getApplicationContext(), "Gender is a social construct", Toast.LENGTH_SHORT);
                 toast.show();
                 UtilTextToSpeech.sayIt("Gender is a social construct");
             }else{
-                cVoice = 32; //Todo: find the integer for a different voice
+                cVoice = 32; //Todo: find the integer for a different voice -> this will not work
                 Toast toast = Toast.makeText(getApplicationContext(), "Gender is a social construct", Toast.LENGTH_SHORT);
                 toast.show();
-                UtilTextToSpeech.sayIt("Gender is a social construct");
             }
         });
 
