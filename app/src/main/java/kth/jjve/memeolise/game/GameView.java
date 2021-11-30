@@ -13,11 +13,12 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import kth.jjve.memeolise.GameActivity;
 
 
-public class GameView extends ViewGroup {
+public class GameView extends LinearLayout {
 
     private static final String LOG_TAG = GameView.class.getSimpleName();
     private Paint paint;
@@ -27,10 +28,6 @@ public class GameView extends ViewGroup {
     //TODO belongs in game logic or game view?
     public static final int SIZE = 3;
     private float cellSize = boardSize / SIZE;
-    private int childCount;
-
-    boolean bCheck = true;
-
 
     public GameView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -38,24 +35,20 @@ public class GameView extends ViewGroup {
         paint = new Paint(); //Paint provides methods to define that line's color
         paint.setAntiAlias(true);
         paint.setStyle(Paint.Style.STROKE);
-        setWillNotDraw(false); //without this line -> no grid in viewGroup
+        setWillNotDraw(false); //without this line -> no grid in otherwise
     }
 
     @Override
-    protected void onMeasure(int width, int height) {
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         // called when Android is trying to figure out the (new) size for this view
         // necessary to adapt view to tablets
-        super.onMeasure(width, height);
-        int squareSide = Math.min(getMeasuredWidth(), getMeasuredHeight());
-        float boardSize = squareSide;
-        cellSize = boardSize / SIZE;
-        int count = getChildCount(); //child count is 3 for some reason
+        int width = MeasureSpec.getSize(widthMeasureSpec);
+        int height = MeasureSpec.getSize(heightMeasureSpec);
+        int squareSide = Math.min(width, height);
+        super.onMeasure(MeasureSpec.makeMeasureSpec(squareSide, MeasureSpec.EXACTLY),
+                MeasureSpec.makeMeasureSpec(squareSide, MeasureSpec.EXACTLY));
         setMeasuredDimension(squareSide, squareSide); // make it a square
 
-    }
-
-    public float getCellSize() {
-        return cellSize;
     }
 
     @Override
@@ -74,16 +67,6 @@ public class GameView extends ViewGroup {
         }
     }
 
-    @Override
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-    //TODO: figure out what to do with this, probs sets layout for children
-        Log.d(LOG_TAG, "onLayout(" + changed + ", " + left + ", "  + top + ", " + right + ", " + bottom + ")");
-        childCount = getChildCount();
-        for(int i=0; i<childCount;i++) {
-            View v = getChildAt(i);
-            v.layout(left, top, right, bottom);
-        }
-    }
 
 
 }
