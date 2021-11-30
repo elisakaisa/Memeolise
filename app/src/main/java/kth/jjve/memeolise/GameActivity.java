@@ -3,11 +3,13 @@ package kth.jjve.memeolise;
 This activity is the activity in which the game is played
  */
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
+import static kth.jjve.memeolise.game.GameView.SIZE;
 
-import android.content.DialogInterface;
-import android.content.Intent;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
+
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -18,13 +20,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.Locale;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import kth.jjve.memeolise.game.GameLogic;
+import kth.jjve.memeolise.utils.UtilTextToSpeech;
 import kth.jjve.memeolise.game.ResultsDialog;
 
 
@@ -49,7 +51,9 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
     /*---------------------------- UI -----------------------*/
     private Button buttonVisual;
     private Button buttonAudio;
+
     private TextView eventNoView, scoreView;
+    private ImageView[] imageViews;
     private ImageView countDown1, countDown2, countDown3;
 
     /*------------------------- COUNTERS --------------------*/
@@ -61,9 +65,8 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
     private GameLogic gameLogic;
     int scoreChecker;
 
-    /*--------------------- TEXT TO SPEECH ------------------*/
-    private TextToSpeech textToSpeech;
-    private static final int utteranceId = 42;
+    /*---------------------- DRAWABLE -----------------------*/
+    private Drawable squareDrawable;
 
     /*------------------------ RESULTS ----------------------*/
     private String resultName;
@@ -75,6 +78,7 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
         /*---------------------- Hooks ----------------------*/
         buttonVisual = findViewById(R.id.buttonVisualMatch);
         buttonAudio = findViewById(R.id.buttonAudioMatch);
+        imageViews = loadReferencesToImageViews();
         eventNoView = findViewById(R.id.textView_game_eventNo);
         scoreView = findViewById(R.id.textView_game_score);
         countDown1 = findViewById(R.id.IV_game_countdown1);
@@ -83,6 +87,11 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
       
         /*----------------- Preferences ---------------------*/
         getPreferences();
+
+        /*------------------ Drawable -----------------------*/
+        Resources resources = getResources();
+        squareDrawable = ResourcesCompat.getDrawable(resources, R.drawable.square, null);
+        setVisibleSquare(2); //sets the visible square (index 0 to 8, from left to right, top to bottom, image tags called)
 
         /*-------------- On Click Listener ------------------*/
         buttonVisual.setOnClickListener(v -> {
@@ -115,11 +124,9 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
 
     @Override
     protected void onPause() {
-    // cancels the text to speech and the timer to save resources
-        if (textToSpeech != null) {
-            textToSpeech.stop();
-            textToSpeech.shutdown();
-        }
+    // NB! Cancel the current and queued utterances, then shut down the service to
+    // de-allocate resources
+        UtilTextToSpeech.shutdown();
         super.onPause();
         cancelTimer();
     }
@@ -128,19 +135,7 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
     protected void onResume() {
         // re-initialise the text-to-speech service (was shutdown in onPause)
         super.onResume();
-        textToSpeech = new TextToSpeech(getApplicationContext(),
-                status -> {
-                    if (status == TextToSpeech.SUCCESS) {
-                        textToSpeech.setLanguage(Locale.UK);
-                    }
-                });
-    }
-
-
-    private void sayIt(String utterance) {
-        // for text to speech
-        textToSpeech.speak(utterance, TextToSpeech.QUEUE_FLUSH,
-                null, "" + utteranceId);
+        UtilTextToSpeech.initialize(getApplicationContext());
     }
 
   
@@ -195,6 +190,28 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
             Log.i("eventTask", "timer canceled");
             handler.post(() -> Toast.makeText(getApplicationContext(), "Timer stopped", Toast.LENGTH_SHORT).show());
         }
+
+      
+    private ImageView[] loadReferencesToImageViews() {
+        // sets images views in the grid
+        ImageView[] imgViews = new ImageView[SIZE * SIZE];
+        imgViews[0] = findViewById(R.id.imageView0);
+        imgViews[1] = findViewById(R.id.imageView1);
+        imgViews[2] = findViewById(R.id.imageView2);
+        imgViews[3] = findViewById(R.id.imageView3);
+        imgViews[4] = findViewById(R.id.imageView4);
+        imgViews[5] = findViewById(R.id.imageView5);
+        imgViews[6] = findViewById(R.id.imageView6);
+        imgViews[7] = findViewById(R.id.imageView7);
+        imgViews[8] = findViewById(R.id.imageView8);
+
+        return imgViews;
+    }
+    
+
+    public void setVisibleSquare(int index) {
+        //method to make the red square visible
+        imageViews[index].setImageDrawable(squareDrawable);
     }
 
 
@@ -258,7 +275,7 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
         handler.post(() -> eventNoView.setText(String.valueOf(eventNo)));
         if (audioOn){
             String letter = gameLogic.returnRandomLetter();
-            sayIt(letter);
+            UtilTextToSpeech.sayIt(letter);
             Log.i("EventHappen", "Letter is " + letter);
         }
         if (visualOn){
@@ -320,7 +337,7 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
         // Method to get the name from the dialog into the activity
         resultName = name;
     }
-
+      
     //Todo: make a maximum score checker at the end of the game
     //Todo: make a serialiser that saves the result
     //Todo: go back to homescreen after saving the result

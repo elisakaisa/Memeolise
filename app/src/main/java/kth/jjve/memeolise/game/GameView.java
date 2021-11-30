@@ -1,5 +1,6 @@
 package kth.jjve.memeolise.game;
 
+
 import android.content.Context;
 
 import android.graphics.Canvas;
@@ -7,12 +8,12 @@ import android.graphics.Color;
 import android.graphics.Paint;
 
 import android.util.AttributeSet; //needed to have preview!!!!
-import android.view.View;
+import android.widget.LinearLayout;
 
 
+public class GameView extends LinearLayout {
 
-public class GameView extends View {
-
+    private static final String LOG_TAG = GameView.class.getSimpleName();
     private Paint paint;
 
     private float boardSize = getWidth();
@@ -21,33 +22,31 @@ public class GameView extends View {
     public static final int SIZE = 3;
     private float cellSize = boardSize / SIZE;
 
-
     public GameView(Context context, AttributeSet attrs) {
-        super(context);
+        super(context, attrs);
 
         paint = new Paint(); //Paint provides methods to define that line's color
         paint.setAntiAlias(true);
         paint.setStyle(Paint.Style.STROKE);
+        setWillNotDraw(false); //without this line -> no grid in otherwise
     }
 
     @Override
-    protected void onMeasure(int width, int height) {
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         // called when Android is trying to figure out the (new) size for this view
         // necessary to adapt view to tablets
-        super.onMeasure(width, height);
-        int squareSide = Math.min(getMeasuredWidth(), getMeasuredHeight());
-        float boardSize = squareSide;
-        cellSize = boardSize / SIZE;
+        int width = MeasureSpec.getSize(widthMeasureSpec);
+        int height = MeasureSpec.getSize(heightMeasureSpec);
+        int squareSide = Math.min(width, height);
+        super.onMeasure(MeasureSpec.makeMeasureSpec(squareSide, MeasureSpec.EXACTLY),
+                MeasureSpec.makeMeasureSpec(squareSide, MeasureSpec.EXACTLY));
         setMeasuredDimension(squareSide, squareSide); // make it a square
-    }
 
-    public float getCellSize() {
-        return cellSize;
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        //Canvas provides a method to draw a line
+        //method to draw the grid on the canvas
         paint.setColor(Color.BLACK);
         paint.setStrokeWidth(16);
 
@@ -60,4 +59,7 @@ public class GameView extends View {
                     cellSize * step, 0, cellSize * step, boardSize, paint);
         }
     }
+
+
+
 }
