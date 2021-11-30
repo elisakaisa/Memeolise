@@ -14,7 +14,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
-import android.speech.tts.TextToSpeech;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -182,14 +181,15 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
     }
 
 
-    private void cancelTimer(){
+    private void cancelTimer() {
         //Method to cancel the timer
-        if (eventTimer != null){
+        if (eventTimer != null) {
             eventTimer.cancel();
             eventTimer = null;
             Log.i("eventTask", "timer canceled");
             handler.post(() -> Toast.makeText(getApplicationContext(), "Timer stopped", Toast.LENGTH_SHORT).show());
         }
+    }
 
       
     private ImageView[] loadReferencesToImageViews() {
