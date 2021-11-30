@@ -69,7 +69,6 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
     /*------------------------ RESULTS ----------------------*/
     private String resultName;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,8 +113,7 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
             Toast.makeText(this, "Task already running", Toast.LENGTH_SHORT).show();
         }
     }
-  
-  
+
     @Override
     protected void onPause() {
     // cancels the text to speech and the timer to save resources
@@ -127,7 +125,6 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
         cancelTimer();
     }
 
-  
     @Override
     protected void onResume() {
         // re-initialise the text-to-speech service (was shutdown in onPause)
@@ -176,10 +173,31 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
         }
     }
 
-    @Override
-    public void applyName(String name) {
-        resultName = name;
+
+    private boolean startTimer(){
+        // Method to start the timer
+        if (eventTimer == null){
+            countdownNo = 0;
+            eventNo = 0;
+            eventTimer = new Timer();
+            EventTimerTask eTT = new EventTimerTask();
+            eventTimer.schedule(eTT, 0, eventInterval);
+            return true;
+        }
+        return false;
     }
+
+
+    private void cancelTimer(){
+        //Method to cancel the timer
+        if (eventTimer != null){
+            eventTimer.cancel();
+            eventTimer = null;
+            Log.i("eventTask", "timer canceled");
+            handler.post(() -> Toast.makeText(getApplicationContext(), "Timer stopped", Toast.LENGTH_SHORT).show());
+        }
+    }
+
 
     private class EventTimerTask extends TimerTask{
         // Class to run the game, based on the timer
@@ -208,7 +226,10 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
         }
     }
 
+
     private void checkIfScored(int n, int eventNo) {
+        // Method that checks if the user has scored points
+        // And outputs the score to the ui
         if (audioOn && !visualOn){
             scoreChecker = gameLogic.checkAudioScored(n, eventNo, audioClick);
         } else if (visualOn && !audioOn){
@@ -232,7 +253,9 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
         scoreView.setText(String.valueOf(score));
     }
 
+
     private void eventRunner(int eventNo){
+        // Method that runs the events on the UI
         handler.post(() -> eventNoView.setText(String.valueOf(eventNo)));
         if (audioOn){
             String letter = gameLogic.returnRandomLetter();
@@ -244,12 +267,16 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
         }
     }
 
+
     private void resetClicks(){
+        // Method to reset button clicks
         visualClick = false;
         audioClick = false;
     }
 
+
     private void publishCountdown(int cd) {
+        // Method that publishes the countdown before the game
         switch(cd){
             case 0:
                 handler.post(() -> {
@@ -282,32 +309,17 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
         }
     }
 
+
     private void openResultsDialog() {
+        // Method that opens the dialog for name input
         ResultsDialog resultsDialog = new ResultsDialog();
         resultsDialog.show(getSupportFragmentManager(), "results dialog");
     }
 
-    private boolean startTimer(){
-        // Method to start the timer
-        if (eventTimer == null){
-            countdownNo = 0;
-            eventNo = 0;
-            eventTimer = new Timer();
-            EventTimerTask eTT = new EventTimerTask();
-            eventTimer.schedule(eTT, 0, eventInterval);
-            return true;
-        }
-        return false;
-    }
-
-    private void cancelTimer(){
-        //Method to cancel the timer
-        if (eventTimer != null){
-            eventTimer.cancel();
-            eventTimer = null;
-            Log.i("eventTask", "timer canceled");
-            handler.post(() -> Toast.makeText(getApplicationContext(), "Timer stopped", Toast.LENGTH_SHORT).show());
-        }
+    @Override
+    public void applyName(String name) {
+        // Method to get the name from the dialog into the activity
+        resultName = name;
     }
 
     //Todo: make a maximum score checker at the end of the game
