@@ -14,31 +14,47 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.speech.tts.TextToSpeech;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Locale;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import kth.jjve.memeolise.game.GameView;
 import kth.jjve.memeolise.utils.UtilTextToSpeech;
+import kth.jjve.memeolise.game.ResultsDialog;
 
 
-public class GameActivity extends AppCompatActivity {
+public class GameActivity extends AppCompatActivity implements ResultsDialog.ResultsDialogListener {
     /*--------------------------- LOG -----------------------*/
     private static final String LOG_TAG = GameActivity.class.getSimpleName();
 
-    /*------------------------- CLASSES ---------------------*/
+    /*------------------------- PREFS ---------------------*/
     private Preferences cPreferences;
+    private int maxEventNo;
+    private long eventInterval;
+
+    /*------------------------ TIMER ------------------------*/
+    private Timer eventTimer = null;
+    private Handler handler;
+    private int eventNo;
+    private int countdownNo;
 
     /*---------------------------- UI -----------------------*/
     private Button buttonVisual;
     private Button buttonAudio;
     private ImageView[] imageViews;
+    private TextView eventNoView;
+    private ImageView countDown1, countDown2, countDown3;
 
     /*------------------------- COUNTERS --------------------*/
     public int audioMatchCounter = 0;
@@ -52,6 +68,10 @@ public class GameActivity extends AppCompatActivity {
     /*---------------------- DRAWABLE -----------------------*/
     private Drawable squareDrawable;
 
+    /*------------------------ RESULTS ----------------------*/
+    private String resultName;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +81,10 @@ public class GameActivity extends AppCompatActivity {
         buttonVisual = findViewById(R.id.buttonVisualMatch);
         buttonAudio = findViewById(R.id.buttonAudioMatch);
         imageViews = loadReferencesToImageViews();
+        eventNoView = (TextView) findViewById(R.id.textView_game_eventNo);
+        countDown1 = (ImageView) findViewById(R.id.IV_game_countdown1);
+        countDown2 = (ImageView) findViewById(R.id.IV_game_countdown2);
+        countDown3 = (ImageView) findViewById(R.id.IV_game_countdown3);
       
         /*----------------- Preferences ---------------------*/
         getPreferences();
@@ -83,6 +107,13 @@ public class GameActivity extends AppCompatActivity {
             Log.d(LOG_TAG, "audio clicked");
         });
 
+        /*---------------- START GAME ----------------------*/
+        handler = new Handler();
+
+        boolean started = startTimer();
+        if (!started) {
+            Toast.makeText(this, "Task already running", Toast.LENGTH_SHORT).show();
+        }
     }
   
   
@@ -92,6 +123,7 @@ public class GameActivity extends AppCompatActivity {
     // de-allocate resources
         UtilTextToSpeech.shutdown();
         super.onPause();
+        cancelTimer();
     }
 
   
@@ -106,6 +138,7 @@ public class GameActivity extends AppCompatActivity {
 
   
     private void getPreferences(){
+        // Method to get the needed preferences
         try{
             FileInputStream fin = openFileInput("preferences.ser");
 
@@ -123,8 +156,12 @@ public class GameActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        //todo: expand so that needed preferences are automatically taken if cPreferences is not null
+        if (cPreferences != null){
+            maxEventNo = cPreferences.getNumberofEvents();
+            eventInterval = (long) cPreferences.getEventInterval();
+        }
     }
+
 
     private ImageView[] loadReferencesToImageViews() {
         // sets images views in the grid
@@ -145,6 +182,93 @@ public class GameActivity extends AppCompatActivity {
     public void setVisibleSquare(int index) {
         //method to make the red square visible
         imageViews[index].setImageDrawable(squareDrawable);
+
+    @Override
+    public void applyName(String name) {
+        resultName = name;
     }
 
+    private class EventTimerTask extends TimerTask{
+        // Class to run the game, based on the timer
+        @Override
+        public void run() {
+            if (countdownNo<=3) {
+                Log.i("EventTask", "In countdown");
+                publishCountdown(countdownNo);
+                countdownNo++;
+            } else {
+                eventNo++;
+                Log.i("EventTask", "Event number " + eventNo);
+                handler.post(() -> eventNoView.setText(String.valueOf(eventNo)));
+                if (eventNo >= maxEventNo) {
+                    cancelTimer();
+                    handler.post(GameActivity.this::openResultsDialog);
+                }
+            }
+        }
+    }
+
+    private void publishCountdown(int cd) {
+        switch(cd){
+            case 0:
+                handler.post(() -> {
+                    countDown3.setVisibility(View.VISIBLE);
+                    countDown2.setVisibility(View.INVISIBLE);
+                    countDown1.setVisibility(View.INVISIBLE);
+                });
+                break;
+            case 1:
+                handler.post(() -> {
+                    countDown3.setVisibility(View.INVISIBLE);
+                    countDown2.setVisibility(View.VISIBLE);
+                    countDown1.setVisibility(View.INVISIBLE);
+                });
+                break;
+            case 2:
+                handler.post(() -> {
+                    countDown3.setVisibility(View.INVISIBLE);
+                    countDown2.setVisibility(View.INVISIBLE);
+                    countDown1.setVisibility(View.VISIBLE);
+                });
+                break;
+            case 3:
+                handler.post(() -> {
+                    countDown3.setVisibility(View.INVISIBLE);
+                    countDown2.setVisibility(View.INVISIBLE);
+                    countDown1.setVisibility(View.INVISIBLE);
+                });
+                break;
+        }
+    }
+
+    private void openResultsDialog() {
+        ResultsDialog resultsDialog = new ResultsDialog();
+        resultsDialog.show(getSupportFragmentManager(), "results dialog");
+    }
+
+    private boolean startTimer(){
+        // Method to start the timer
+        if (eventTimer == null){
+            countdownNo = 0;
+            eventNo = 0;
+            eventTimer = new Timer();
+            EventTimerTask eTT = new EventTimerTask();
+            eventTimer.schedule(eTT, 0, eventInterval);
+            return true;
+        }
+        return false;
+    }
+
+    private void cancelTimer(){
+        //Method to cancel the timer
+        if (eventTimer != null){
+            eventTimer.cancel();
+            eventTimer = null;
+            Log.i("eventTask", "timer canceled");
+            handler.post(() -> Toast.makeText(getApplicationContext(), "Timer stopped", Toast.LENGTH_SHORT).show());
+            //Todo: replace toast above by a Dialog that allows the input of some text (Jitse can do that :) )
+        }
+    }
+
+    //Todo: make a serialiser that saves the result
 }

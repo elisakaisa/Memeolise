@@ -49,7 +49,7 @@ public class PrefsActivity extends AppCompatActivity implements NavigationView.O
     private int cVoice = 42;            //Integer that decides which voice is being used
     private boolean cAudio = true;      //Boolean that decides if audio is on or off
     private boolean cVisual = true;     //Boolean that decides if visuals are on or off
-    private int cEventInterval = 50;    //Interval between events in game
+    private double cEventInterval = 50;    //Interval between events in game
     private int cNumberofEvents = 10;   //Number of events the user plays
     private int cValueofN = 1;          //User can decide n
 
@@ -168,7 +168,7 @@ public class PrefsActivity extends AppCompatActivity implements NavigationView.O
     private void setPreferences(){
         // Method to set the preferences and serialise them to the
         // locally stored preferences file
-        cEventInterval = Integer.parseInt(et1.getText().toString());
+        cEventInterval = Double.parseDouble(et1.getText().toString());
         cNumberofEvents = Integer.parseInt(et2.getText().toString());
         cValueofN = Integer.parseInt(et3.getText().toString());
 
@@ -186,7 +186,7 @@ public class PrefsActivity extends AppCompatActivity implements NavigationView.O
             cVoice = cPreferences.getVoice();
             cAudio = cPreferences.getAudio();
             cVisual = cPreferences.getVisual();
-            cEventInterval = cPreferences.getEventInterval();
+            cEventInterval = (double) cPreferences.getEventInterval() / 1000;
             cNumberofEvents = cPreferences.getNumberofEvents();
             cValueofN = cPreferences.getValueofN();
 
@@ -206,7 +206,7 @@ public class PrefsActivity extends AppCompatActivity implements NavigationView.O
     }
 
     private void serialisePreferences(int theme, int voice, boolean audio, boolean visual,
-                                      int eventInterval, int numberofEvents, int valueofN){
+                                      double eventInterval, int numberofEvents, int valueofN){
         // Method that serialises the preferences
         Preferences prefs = new Preferences(theme, voice, audio, visual, eventInterval, numberofEvents, valueofN);
         try{
