@@ -16,6 +16,7 @@
         <entry key="..\:/jjves/Documents/SpT-KTH/Q2-MobileApplications/Memeolise/app/src/main/res/layout/header.xml" value="0.365625" />
         <entry key="..\:/jjves/Documents/SpT-KTH/Q2-MobileApplications/Memeolise/app/src/main/res/layout/toolbar.xml" value="0.2046875" />
         <entry key="..\:/jjves/Documents/SpT-KTH/Q2-MobileApplications/Memeolise/app/src/main/res/menu/main_menu.xml" value="0.365625" />
+        <entry key="app/src/main/res/drawable/ic_baseline_volume_off_24.xml" value="0.2140625" />
         <entry key="app/src/main/res/drawable/square.xml" value="0.2140625" />
         <entry key="app/src/main/res/layout/activity_game.xml" value="0.19791666666666666" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.19791666666666666" />
@@ -27,5 +28,12 @@
   </component>
   <component name="ProjectType">
     <option name="id" value="Android" />
+  </component>
+  <component name="VisualizationToolProject">
+    <option name="state">
+      <ProjectState>
+        <option name="scale" value="0.19791666666666666" />
+      </ProjectState>
+    </option>
   </component>
 </project>

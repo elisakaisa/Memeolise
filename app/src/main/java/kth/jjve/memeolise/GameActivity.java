@@ -3,6 +3,8 @@ package kth.jjve.memeolise;
 This activity is the activity in which the game is played
  */
 
+import static kth.jjve.memeolise.game.GameView.SIZE;
+
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -13,10 +15,13 @@ import android.util.Log;
 import android.view.View;
 import android.speech.tts.TextToSpeech;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import java.util.Locale;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
+
+import kth.jjve.memeolise.game.GameView;
 
 
 public class GameActivity extends AppCompatActivity {
@@ -29,6 +34,7 @@ public class GameActivity extends AppCompatActivity {
     /*---------------------------- UI -----------------------*/
     private Button buttonVisual;
     private Button buttonAudio;
+    private ImageView[] imageViews;
 
     /*------------------------- COUNTERS --------------------*/
     public int audioMatchCounter = 0;
@@ -47,6 +53,7 @@ public class GameActivity extends AppCompatActivity {
         /*---------------------- Hooks ----------------------*/
         buttonVisual = findViewById(R.id.buttonVisualMatch);
         buttonAudio = findViewById(R.id.buttonAudioMatch);
+        imageViews = loadReferencesToImageViews();
       
         /*----------------- Preferences ---------------------*/
         getPreferences();
@@ -120,17 +127,23 @@ public class GameActivity extends AppCompatActivity {
 
         //todo: expand so that needed preferences are automatically taken if cPreferences is not null
     }
-  
 
-    /*--------Alert dialogs (ie game finished)-----*/
-    // TODO check if we can input sth in alert dialog (popup for players name)
-    private AlertDialog createMsgDialog(String title, String message) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(title);
-        builder.setMessage(message);
-        builder.setPositiveButton("Ok", (dialog, id) -> {
-        });
-        return builder.create();
+    private ImageView[] loadReferencesToImageViews() {
+        // well, it would probably be easier (for a larger matrix) to create
+        // the views in Java code and then add them to the appropriate layout
+        // or use findViewWithTag
+        ImageView[] imgViews = new ImageView[SIZE * SIZE];
+        imgViews[0] = findViewById(R.id.imageView0);
+        imgViews[1] = findViewById(R.id.imageView1);
+        imgViews[2] = findViewById(R.id.imageView2);
+        imgViews[3] = findViewById(R.id.imageView3);
+        imgViews[4] = findViewById(R.id.imageView4);
+        imgViews[5] = findViewById(R.id.imageView5);
+        imgViews[6] = findViewById(R.id.imageView6);
+        imgViews[7] = findViewById(R.id.imageView7);
+        imgViews[8] = findViewById(R.id.imageView8);
+
+        return imgViews;
     }
 
 }
