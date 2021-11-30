@@ -54,11 +54,12 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
 
     /*------------------------- COUNTERS --------------------*/
     private boolean visualClick;
-    private boolean audioScored;
+    private boolean audioClick;
     private int score;
 
     /*----------------------- GAME --------------------------*/
     private GameLogic gameLogic;
+    int scoreChecker;
 
     /*--------------------- TEXT TO SPEECH ------------------*/
     private TextToSpeech textToSpeech;
@@ -87,20 +88,17 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
 
         /*-------------- On Click Listener ------------------*/
         buttonVisual.setOnClickListener(v -> {
-            visualClick = true;
-            Log.d(LOG_TAG, "position clicked");
+            if (eventNo > n && eventNo <= maxEventNo){
+                visualClick = true;
+            } else {
+                Toast.makeText(this, "Not clickable", Toast.LENGTH_SHORT).show();
+            }
+            Log.d(LOG_TAG, "visual clicked");
         });
 
         buttonAudio.setOnClickListener(v -> {
-            int currentEvent = eventNo; // Todo: fix bug of crash on end click
-            //Todo: discovered bug with more events, clicking keeps adding scores until it doesn't
-            //Todo: change this function to the other thread
-            if (currentEvent > n && currentEvent <= maxEventNo){
-                audioScored = gameLogic.checkAudioScored(n, currentEvent);
-                if (audioScored){
-                    score++;
-                    scoreView.setText(String.valueOf(score));
-                }
+            if (eventNo > n && eventNo <= maxEventNo){
+                audioClick = true;
             } else {
                 Toast.makeText(this, "Not clickable", Toast.LENGTH_SHORT).show();
             }
@@ -132,9 +130,8 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
   
     @Override
     protected void onResume() {
+        // re-initialise the text-to-speech service (was shutdown in onPause)
         super.onResume();
-        // Initialize the text-to-speech service - we do this initialization
-        // in onResume because we shutdown the service in onPause
         textToSpeech = new TextToSpeech(getApplicationContext(),
                 status -> {
                     if (status == TextToSpeech.SUCCESS) {
@@ -193,28 +190,54 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
                 publishCountdown(countdownNo);
                 countdownNo++;
             } else {
-                eventNo++;
-                resetClicks();
-                if (eventNo < maxEventNo){
+                eventNo++;  //increase the eventNo (starts at 1)
                 Log.i("EventTask", "Event number " + eventNo);
-                eventRunner(eventNo);
-                handler.post(() -> eventNoView.setText(String.valueOf(eventNo)));
-                } else if (eventNo > maxEventNo) {
+                if (eventNo <= n+1){
+                    eventRunner(eventNo);
+                } else if (eventNo> n+1 && eventNo<=maxEventNo){
+                    checkIfScored(n, eventNo-1);
+                    resetClicks();
+                    eventRunner(eventNo);
+                } else {
+                    checkIfScored(n, eventNo-1);
+                    resetClicks();
                     cancelTimer();
                     handler.post(GameActivity.this::openResultsDialog);
-                } else {
-                    handler.post(() -> eventNoView.setText(String.valueOf(eventNo)));
                 }
             }
         }
     }
 
-    private void eventRunner(int eventNumber){
+    private void checkIfScored(int n, int eventNo) {
+        if (audioOn && !visualOn){
+            scoreChecker = gameLogic.checkAudioScored(n, eventNo, audioClick);
+        } else if (visualOn && !audioOn){
+            scoreChecker = gameLogic.checkVisualScored(n, eventNo, visualClick);
+        } else{
+            scoreChecker = gameLogic.checkCombinedScored(n, eventNo, audioClick, visualClick);
+        }
+
+        if (scoreChecker == -1){ //Todo: move to a method somewhere else
+            // both are incorrect
+            // Todo: display something to show that something has not been noticed
+
+        } else if (scoreChecker == 0){
+            // only one is incorrect
+            score++;
+
+        } else {
+            // both are correct
+            score = score +2;
+        }
+        scoreView.setText(String.valueOf(score));
+    }
+
+    private void eventRunner(int eventNo){
+        handler.post(() -> eventNoView.setText(String.valueOf(eventNo)));
         if (audioOn){
             String letter = gameLogic.returnRandomLetter();
             sayIt(letter);
             Log.i("EventHappen", "Letter is " + letter);
-            // Todo: run the audio part
         }
         if (visualOn){
             //Todo: run the visual part
@@ -223,7 +246,7 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
 
     private void resetClicks(){
         visualClick = false;
-        audioScored = false;
+        audioClick = false;
     }
 
     private void publishCountdown(int cd) {
@@ -289,4 +312,5 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
 
     //Todo: make a maximum score checker at the end of the game
     //Todo: make a serialiser that saves the result
+    //Todo: go back to homescreen after saving the result
 }

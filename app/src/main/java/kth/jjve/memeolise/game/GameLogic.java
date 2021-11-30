@@ -19,10 +19,11 @@ public class GameLogic {
     public String returnRandomLetter(){
         // Function that takes a random letter from the letter list
         // Returns the letter and appends it to usedLetters
-        Random rand = new Random();
-        String letter = letterList.get(rand.nextInt(letterList.size()));
-//        String letter = "a";
-        usedLetters.add(letter);
+//        Random rand = new Random();
+//        String letter = letterList.get(rand.nextInt(letterList.size()));
+//        usedLetters.add(letter);
+        String letter = "a";
+        usedLetters = Arrays.asList("a", "a", "b", "a", "a");
 
         return letter;
     }
@@ -37,22 +38,55 @@ public class GameLogic {
         return position;
     }
 
-    public boolean checkVisualScored(boolean visualPress, int n, int eventNo){
+    public int checkVisualScored(int n, int eventNo, boolean buttonPress){
         //Function to check if the user has scored on the visual
-        return (usedPositions.get(eventNo-1).equals(usedPositions.get(eventNo - n -1)) && visualPress);
+        int a = usedPositions.get(eventNo-1);
+        int b = usedPositions.get(eventNo - n - 1);
+        boolean shouldPress = a==b;
+
+        if (shouldPress == buttonPress){
+            return 0;
+        }
+        else{
+            return -1;
+        }
     }
 
-    public boolean checkAudioScored(int n, int eventNo){
+    public int checkAudioScored(int n, int eventNo, boolean buttonPress){
         //Function to check if the user has scored on the audio
+        //Todo: save a maximum score somewhere
         String a = usedLetters.get(eventNo-1);
         String b = usedLetters.get(eventNo - n - 1);
-        return (a.equals(b));
+        boolean shouldPress = a.equals(b);
+
+        if (shouldPress == buttonPress){
+            return 0;
+        }
+        else{
+            return -1;
+        }
     }
 
-    public boolean checkCombinedScored(boolean audioPress, boolean visualPress, int n, int eventNo){
+    public int checkCombinedScored(int n, int eventNo, boolean buttonPress1, boolean buttonPress2){
         //Function to check if the user has scored on both audio and visual
-        return (usedLetters.get(eventNo-1).equals(usedLetters.get(eventNo - n - 1)) && audioPress &&
-                usedPositions.get(eventNo-1).equals(usedPositions.get(eventNo - n -1)) && visualPress);
+        String a = usedLetters.get(eventNo-1);
+        String b = usedLetters.get(eventNo - n - 1);
+        boolean shouldPress1 = a.equals(b);
+        int c = usedPositions.get(eventNo-1);
+        int d = usedPositions.get(eventNo - n - 1);
+        boolean shouldPress2 = c==d;
+
+        if (shouldPress2 == buttonPress2 && shouldPress1 == buttonPress1){
+            return 1;
+        } else if (shouldPress1 == buttonPress1){
+            return 0;
+        } else if (shouldPress2 == buttonPress2){
+            return 0;
+        } else {
+            return -1;
+        }
+
+
     }
 
     public static GameLogic getInstance() {
