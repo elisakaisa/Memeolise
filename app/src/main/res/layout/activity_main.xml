@@ -91,11 +91,12 @@
             android:layout_height="40dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
+            android:clickable="true"
+            android:contentDescription="@string/desc_help"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/main_toolbar"
             app:srcCompat="@drawable/ic_baseline_question_mark_24"
-            android:contentDescription="@string/desc_help"
-            android:clickable="true"/>
+            tools:ignore="TouchTargetSizeCheck" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

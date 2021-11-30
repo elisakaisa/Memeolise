@@ -25,6 +25,7 @@ import java.io.ObjectInputStream;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import kth.jjve.memeolise.game.GameLogic;
 import kth.jjve.memeolise.utils.UtilTextToSpeech;
 import kth.jjve.memeolise.game.ResultsDialog;
 
@@ -37,6 +38,9 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
     private Preferences cPreferences;
     private int maxEventNo;
     private long eventInterval;
+    private boolean audioOn;
+    private boolean visualOn;
+    private int n;                  // chosen n of the user
 
     /*------------------------ TIMER ------------------------*/
     private Timer eventTimer = null;
@@ -47,21 +51,25 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
     /*---------------------------- UI -----------------------*/
     private Button buttonVisual;
     private Button buttonAudio;
+
+    private TextView eventNoView, scoreView;
     private ImageView[] imageViews;
-    private TextView eventNoView;
     private ImageView countDown1, countDown2, countDown3;
 
     /*------------------------- COUNTERS --------------------*/
-    public int audioMatchCounter = 0;
-    public int visualMatchCounter = 0;
+    private boolean visualClick;
+    private boolean audioClick;
+    private int score;
+
+    /*----------------------- GAME --------------------------*/
+    private GameLogic gameLogic;
+    int scoreChecker;
 
     /*---------------------- DRAWABLE -----------------------*/
     private Drawable squareDrawable;
 
     /*------------------------ RESULTS ----------------------*/
     private String resultName;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,10 +79,11 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
         buttonVisual = findViewById(R.id.buttonVisualMatch);
         buttonAudio = findViewById(R.id.buttonAudioMatch);
         imageViews = loadReferencesToImageViews();
-        eventNoView = (TextView) findViewById(R.id.textView_game_eventNo);
-        countDown1 = (ImageView) findViewById(R.id.IV_game_countdown1);
-        countDown2 = (ImageView) findViewById(R.id.IV_game_countdown2);
-        countDown3 = (ImageView) findViewById(R.id.IV_game_countdown3);
+        eventNoView = findViewById(R.id.textView_game_eventNo);
+        scoreView = findViewById(R.id.textView_game_score);
+        countDown1 = findViewById(R.id.IV_game_countdown1);
+        countDown2 = findViewById(R.id.IV_game_countdown2);
+        countDown3 = findViewById(R.id.IV_game_countdown3);
       
         /*----------------- Preferences ---------------------*/
         getPreferences();
@@ -86,27 +95,33 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
 
         /*-------------- On Click Listener ------------------*/
         buttonVisual.setOnClickListener(v -> {
-            visualMatchCounter++;
-            UtilTextToSpeech.sayIt("position");
-            Log.d(LOG_TAG, "position clicked");
+            if (eventNo > n && eventNo <= maxEventNo){
+                visualClick = true;
+            } else {
+                Toast.makeText(this, "Not clickable", Toast.LENGTH_SHORT).show();
+            }
+            Log.d(LOG_TAG, "visual clicked");
         });
 
         buttonAudio.setOnClickListener(v -> {
-            audioMatchCounter++;
-            UtilTextToSpeech.sayIt("audio");
+            if (eventNo > n && eventNo <= maxEventNo){
+                audioClick = true;
+            } else {
+                Toast.makeText(this, "Not clickable", Toast.LENGTH_SHORT).show();
+            }
             Log.d(LOG_TAG, "audio clicked");
         });
 
         /*---------------- START GAME ----------------------*/
         handler = new Handler();
+        gameLogic = GameLogic.getInstance(); //singleton
 
         boolean started = startTimer();
         if (!started) {
             Toast.makeText(this, "Task already running", Toast.LENGTH_SHORT).show();
         }
     }
-  
-  
+
     @Override
     protected void onPause() {
     // NB! Cancel the current and queued utterances, then shut down the service to
@@ -116,14 +131,11 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
         cancelTimer();
     }
 
-  
     @Override
     protected void onResume() {
+        // re-initialise the text-to-speech service (was shutdown in onPause)
         super.onResume();
-        // Initialize the text-to-speech service - we do this initialization
-        // in onResume because we shutdown the service in onPause
         UtilTextToSpeech.initialize(getApplicationContext());
-
     }
 
   
@@ -149,10 +161,37 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
         if (cPreferences != null){
             maxEventNo = cPreferences.getNumberofEvents();
             eventInterval = (long) cPreferences.getEventInterval();
+            audioOn = cPreferences.getAudio();
+            visualOn = cPreferences.getVisual();
+            n = cPreferences.getValueofN();
         }
     }
 
 
+    private boolean startTimer(){
+        // Method to start the timer
+        if (eventTimer == null){
+            countdownNo = 0;
+            eventNo = 0;
+            eventTimer = new Timer();
+            EventTimerTask eTT = new EventTimerTask();
+            eventTimer.schedule(eTT, 0, eventInterval);
+            return true;
+        }
+        return false;
+    }
+
+
+    private void cancelTimer(){
+        //Method to cancel the timer
+        if (eventTimer != null){
+            eventTimer.cancel();
+            eventTimer = null;
+            Log.i("eventTask", "timer canceled");
+            handler.post(() -> Toast.makeText(getApplicationContext(), "Timer stopped", Toast.LENGTH_SHORT).show());
+        }
+
+      
     private ImageView[] loadReferencesToImageViews() {
         // sets images views in the grid
         ImageView[] imgViews = new ImageView[SIZE * SIZE];
@@ -168,16 +207,13 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
 
         return imgViews;
     }
+    
 
     public void setVisibleSquare(int index) {
         //method to make the red square visible
         imageViews[index].setImageDrawable(squareDrawable);
     }
 
-    @Override
-    public void applyName(String name) {
-        resultName = name;
-    }
 
     private class EventTimerTask extends TimerTask{
         // Class to run the game, based on the timer
@@ -188,10 +224,17 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
                 publishCountdown(countdownNo);
                 countdownNo++;
             } else {
-                eventNo++;
+                eventNo++;  //increase the eventNo (starts at 1)
                 Log.i("EventTask", "Event number " + eventNo);
-                handler.post(() -> eventNoView.setText(String.valueOf(eventNo)));
-                if (eventNo >= maxEventNo) {
+                if (eventNo <= n+1){
+                    eventRunner(eventNo);
+                } else if (eventNo> n+1 && eventNo<=maxEventNo){
+                    checkIfScored(n, eventNo-1);
+                    resetClicks();
+                    eventRunner(eventNo);
+                } else {
+                    checkIfScored(n, eventNo-1);
+                    resetClicks();
                     cancelTimer();
                     handler.post(GameActivity.this::openResultsDialog);
                 }
@@ -199,7 +242,57 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
         }
     }
 
+
+    private void checkIfScored(int n, int eventNo) {
+        // Method that checks if the user has scored points
+        // And outputs the score to the ui
+        if (audioOn && !visualOn){
+            scoreChecker = gameLogic.checkAudioScored(n, eventNo, audioClick);
+        } else if (visualOn && !audioOn){
+            scoreChecker = gameLogic.checkVisualScored(n, eventNo, visualClick);
+        } else{
+            scoreChecker = gameLogic.checkCombinedScored(n, eventNo, audioClick, visualClick);
+        }
+
+        if (scoreChecker == -1){
+            // both are incorrect
+            // Todo: display something to show that something has not been noticed
+
+        } else if (scoreChecker == 0){
+            // only one is incorrect
+            score++;
+
+        } else {
+            // both are correct
+            score = score +2;
+        }
+        scoreView.setText(String.valueOf(score));
+    }
+
+
+    private void eventRunner(int eventNo){
+        // Method that runs the events on the UI
+        handler.post(() -> eventNoView.setText(String.valueOf(eventNo)));
+        if (audioOn){
+            String letter = gameLogic.returnRandomLetter();
+            UtilTextToSpeech.sayIt(letter);
+            Log.i("EventHappen", "Letter is " + letter);
+        }
+        if (visualOn){
+            //Todo: run the visual part
+        }
+    }
+
+
+    private void resetClicks(){
+        // Method to reset button clicks
+        visualClick = false;
+        audioClick = false;
+    }
+
+
     private void publishCountdown(int cd) {
+        // Method that publishes the countdown before the game
         switch(cd){
             case 0:
                 handler.post(() -> {
@@ -232,34 +325,21 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
         }
     }
 
+
     private void openResultsDialog() {
+        // Method that opens the dialog for name input
         ResultsDialog resultsDialog = new ResultsDialog();
         resultsDialog.show(getSupportFragmentManager(), "results dialog");
     }
 
-    private boolean startTimer(){
-        // Method to start the timer
-        if (eventTimer == null){
-            countdownNo = 0;
-            eventNo = 0;
-            eventTimer = new Timer();
-            EventTimerTask eTT = new EventTimerTask();
-            eventTimer.schedule(eTT, 0, eventInterval);
-            return true;
-        }
-        return false;
+    @Override
+    public void applyName(String name) {
+        // Method to get the name from the dialog into the activity
+        resultName = name;
     }
-
-    private void cancelTimer(){
-        //Method to cancel the timer
-        if (eventTimer != null){
-            eventTimer.cancel();
-            eventTimer = null;
-            Log.i("eventTask", "timer canceled");
-            handler.post(() -> Toast.makeText(getApplicationContext(), "Timer stopped", Toast.LENGTH_SHORT).show());
-            //Todo: replace toast above by a Dialog that allows the input of some text (Jitse can do that :) )
-        }
-    }
-
-    //Todo: make a serializer that saves the result
+      
+    //Todo: make a maximum score checker at the end of the game
+    //Todo: make a serialiser that saves the result
+    //Todo: go back to homescreen after saving the result
+    //Todo: add a safety for when both audio and visual have been turned off
 }
