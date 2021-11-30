@@ -7,9 +7,12 @@ import static kth.jjve.memeolise.game.GameView.SIZE;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -45,6 +48,9 @@ public class GameActivity extends AppCompatActivity {
     private static final int utteranceId = 42;
     //TODO might be where we set the voice? to be investigated
 
+    /*---------------------- DRAWABLE -----------------------*/
+    private Drawable squareDrawable;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,10 +64,15 @@ public class GameActivity extends AppCompatActivity {
         /*----------------- Preferences ---------------------*/
         getPreferences();
 
+        /*------------------ Drawable -----------------------*/
+        Resources resources = getResources();
+        squareDrawable = ResourcesCompat.getDrawable(resources, R.drawable.square, null);
+        setVisibleSquare(2); //sets the visible square (index 0 to 8, from left to right, top to bottom, image tags called)
+
         /*-------------- On Click Listener ------------------*/
         buttonVisual.setOnClickListener(v -> {
             visualMatchCounter++;
-            sayIt("position"); //get "speak failed: not bound to TTS engine", check if works with phone
+            sayIt("position");
             Log.d(LOG_TAG, "position clicked");
         });
 
@@ -129,9 +140,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private ImageView[] loadReferencesToImageViews() {
-        // well, it would probably be easier (for a larger matrix) to create
-        // the views in Java code and then add them to the appropriate layout
-        // or use findViewWithTag
+        // sets images views in the grid
         ImageView[] imgViews = new ImageView[SIZE * SIZE];
         imgViews[0] = findViewById(R.id.imageView0);
         imgViews[1] = findViewById(R.id.imageView1);
@@ -144,6 +153,11 @@ public class GameActivity extends AppCompatActivity {
         imgViews[8] = findViewById(R.id.imageView8);
 
         return imgViews;
+    }
+
+    public void setVisibleSquare(int index) {
+        //method to make the red square visible
+        imageViews[index].setImageDrawable(squareDrawable);
     }
 
 }

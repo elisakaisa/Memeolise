@@ -1,6 +1,5 @@
 package kth.jjve.memeolise.game;
 
-import static android.view.ViewGroup.*;
 
 import android.content.Context;
 
@@ -9,13 +8,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 
 import android.util.AttributeSet; //needed to have preview!!!!
-import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-
-import kth.jjve.memeolise.GameActivity;
 
 
 public class GameView extends LinearLayout {
@@ -53,7 +46,7 @@ public class GameView extends LinearLayout {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        //Canvas provides a method to draw a line
+        //method to draw the grid on the canvas
         paint.setColor(Color.BLACK);
         paint.setStrokeWidth(16);
 
