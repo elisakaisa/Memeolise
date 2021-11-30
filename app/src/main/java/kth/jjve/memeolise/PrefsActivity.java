@@ -31,6 +31,8 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import kth.jjve.memeolise.utils.UtilTextToSpeech;
+
 public class PrefsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     /*-------------------------- VIEWS ----------------------*/
@@ -101,13 +103,20 @@ public class PrefsActivity extends AppCompatActivity implements NavigationView.O
             Toast toast = Toast.makeText(getApplicationContext(), "Preferences saved",
                     Toast.LENGTH_SHORT);
             toast.show();
+            UtilTextToSpeech.sayIt("Preferences saved");
         });
 
         switch1.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            //TODO: take Elisa's political crap away before handing in :D
             if (isChecked){
                 cVoice = 42;
+                Toast toast = Toast.makeText(getApplicationContext(), "Gender is a social construct", Toast.LENGTH_SHORT);
+                toast.show();
+                UtilTextToSpeech.sayIt("Gender is a social construct");
             }else{
-                cVoice = 32; //Todo: find the integer for a different voice
+                cVoice = 32; //Todo: find the integer for a different voice -> this will not work
+                Toast toast = Toast.makeText(getApplicationContext(), "Gender is a social construct", Toast.LENGTH_SHORT);
+                toast.show();
             }
         });
 
@@ -121,6 +130,15 @@ public class PrefsActivity extends AppCompatActivity implements NavigationView.O
         super.onResume();
         navigationView2.setCheckedItem(R.id.nav_preferences);
         Log.i(LOG_TAG, "onResume happens");
+        UtilTextToSpeech.initialize(getApplicationContext());
+    }
+
+    @Override
+    protected void onPause() {
+        // NB! Cancel the current and queued utterances, then shut down the service to
+        // de-allocate resources
+        UtilTextToSpeech.shutdown();
+        super.onPause();
     }
 
     @Override
