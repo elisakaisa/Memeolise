@@ -5,12 +5,9 @@ This activity is the activity in which the game is played
 
 import static kth.jjve.memeolise.game.GameView.SIZE;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -23,13 +20,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.Locale;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import kth.jjve.memeolise.game.GameView;
 import kth.jjve.memeolise.utils.UtilTextToSpeech;
 import kth.jjve.memeolise.game.ResultsDialog;
 
@@ -59,11 +54,6 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
     /*------------------------- COUNTERS --------------------*/
     public int audioMatchCounter = 0;
     public int visualMatchCounter = 0;
-
-    /*--------------------- TEXT TO SPEECH ------------------*/
-    private TextToSpeech textToSpeech;
-    private static final int utteranceId = 42;
-    //TODO might be where we set the voice? to be investigated
 
     /*---------------------- DRAWABLE -----------------------*/
     private Drawable squareDrawable;
@@ -182,6 +172,7 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
     public void setVisibleSquare(int index) {
         //method to make the red square visible
         imageViews[index].setImageDrawable(squareDrawable);
+    }
 
     @Override
     public void applyName(String name) {
@@ -270,5 +261,5 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
         }
     }
 
-    //Todo: make a serialiser that saves the result
+    //Todo: make a serializer that saves the result
 }
