@@ -18,7 +18,6 @@ public class GameView extends LinearLayout {
 
     private float boardSize = getWidth();
 
-    //TODO belongs in game logic or game view?
     public static final int SIZE = 3;
     private float cellSize = boardSize / SIZE;
 

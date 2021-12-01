@@ -7,6 +7,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,6 +19,13 @@ import com.google.android.material.navigation.NavigationView;
 
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+import kth.jjve.memeolise.game.ResultStorage;
+import kth.jjve.memeolise.game.Results;
+import kth.jjve.memeolise.view.ResultItem;
+import kth.jjve.memeolise.view.ResultItemAdapter;
 
 public class ResultsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -30,6 +39,13 @@ public class ResultsActivity extends AppCompatActivity implements NavigationView
     /*------------------------- CLASSES ---------------------*/
     private Preferences cPreferences;
 
+    /*------------------------- RESULTS ---------------------*/
+    private ResultStorage resultStorage;
+    private List<Results> resultList;
+
+    /*-------------------------VIEWING ----------------------*/
+    private RecyclerView recyclerView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +55,7 @@ public class ResultsActivity extends AppCompatActivity implements NavigationView
         drawerLayout3 = findViewById(R.id.drawer_layout_results);
         navigationView3 = findViewById(R.id.nav_view_results);
         toolbar3 = findViewById(R.id.results_toolbar);
+        recyclerView = findViewById(R.id.results_recyclerview);
 
         /*--------------------- Tool bar --------------------*/
         setSupportActionBar(toolbar3);
@@ -51,6 +68,12 @@ public class ResultsActivity extends AppCompatActivity implements NavigationView
         toggle.syncState();
         navigationView3.setNavigationItemSelectedListener(this);
         navigationView3.setCheckedItem(R.id.nav_results);
+
+        /*--------------- Results ---------------------------*/
+        getResults();
+        if (resultList != null) {
+            fillRecyclerView(resultList);
+        }
     }
 
     @Override
@@ -85,15 +108,16 @@ public class ResultsActivity extends AppCompatActivity implements NavigationView
         return true;
     }
 
-    private void getPreferences(){
+
+    private void getResults(){
         try{
-            FileInputStream fin = openFileInput("preferences.ser");
+            FileInputStream fin = openFileInput("results.ser");
 
             // Wrapping our stream
             ObjectInputStream oin = new ObjectInputStream(fin);
 
             // Reading in our object
-            cPreferences = (Preferences) oin.readObject();
+            resultStorage = (ResultStorage) oin.readObject();
 
             // Closing our object stream which also closes the wrapped stream
             oin.close();
@@ -103,6 +127,25 @@ public class ResultsActivity extends AppCompatActivity implements NavigationView
             e.printStackTrace();
         }
 
-        //todo: expand so that needed preferences are automatically taken if cPreferences is not null
+        if (resultStorage != null){
+            resultList = resultStorage.getResultList();
+        }
+    }
+
+    public void fillRecyclerView(List<Results> RL){
+        ArrayList<ResultItem> itemList = new ArrayList<>();
+        for (Results resultInstance : RL){
+            String name =  resultInstance.getResultName();
+            int score = resultInstance.getScore();
+            int maxscore = resultInstance.getMaxscore();
+
+            itemList.add(new ResultItem(name, score, maxscore));
+        }
+        RecyclerView.Adapter<ResultItemAdapter.ResultItemViewHolder> adapter =
+                new ResultItemAdapter(itemList);
+        RecyclerView.LayoutManager lm = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(lm);
+        recyclerView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
     }
 }
