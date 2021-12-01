@@ -18,9 +18,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -31,7 +29,6 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import kth.jjve.memeolise.utils.UtilTextToSpeech;
 
 public class PrefsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -103,7 +100,6 @@ public class PrefsActivity extends AppCompatActivity implements NavigationView.O
             Toast toast = Toast.makeText(getApplicationContext(), "Preferences saved",
                     Toast.LENGTH_SHORT);
             toast.show();
-            UtilTextToSpeech.sayIt("Preferences saved");
         });
 
         switch1.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -112,7 +108,6 @@ public class PrefsActivity extends AppCompatActivity implements NavigationView.O
                 cVoice = 42;
                 Toast toast = Toast.makeText(getApplicationContext(), "Gender is a social construct", Toast.LENGTH_SHORT);
                 toast.show();
-                UtilTextToSpeech.sayIt("Gender is a social construct");
             }else{
                 cVoice = 32; //Todo: find how to change the voice
                 Toast toast = Toast.makeText(getApplicationContext(), "Gender is a social construct", Toast.LENGTH_SHORT);
@@ -130,14 +125,12 @@ public class PrefsActivity extends AppCompatActivity implements NavigationView.O
         super.onResume();
         navigationView2.setCheckedItem(R.id.nav_preferences);
         Log.i(LOG_TAG, "onResume happens");
-        UtilTextToSpeech.initialize(getApplicationContext());
     }
 
     @Override
     protected void onPause() {
         // NB! Cancel the current and queued utterances, then shut down the service to
         // de-allocate resources
-        UtilTextToSpeech.shutdown();
         super.onPause();
     }
 
