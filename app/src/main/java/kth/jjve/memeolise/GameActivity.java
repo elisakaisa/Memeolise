@@ -83,14 +83,16 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
         countDown1 = findViewById(R.id.IV_game_countdown1);
         countDown2 = findViewById(R.id.IV_game_countdown2);
         countDown3 = findViewById(R.id.IV_game_countdown3);
-      
+
         /*----------------- Preferences ---------------------*/
         getPreferences();
 
         /*------------------ Drawable -----------------------*/
         Resources resources = getResources();
         squareDrawable = ResourcesCompat.getDrawable(resources, R.drawable.square, null);
-        setVisibleSquare(2); //sets the visible square (index 0 to 8, from left to right, top to bottom, image tags called)
+        //setVisibleSquare(2); //sets the visible square (index 0 to 8, from left to right, top to bottom, image tags called)
+        //initializeSquares();
+        //setInvisibleSquares();
 
         /*-------------- On Click Listener ------------------*/
         buttonVisual.setOnClickListener(v -> {
@@ -209,9 +211,23 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
     }
     
 
+    public void initializeSquares(){
+        for (int i = 0; i<9; i++) {
+            imageViews[i].setImageDrawable(squareDrawable);
+        }
+    }
+
     public void setVisibleSquare(int index) {
         //method to make the red square visible
         imageViews[index].setImageDrawable(squareDrawable);
+        imageViews[index].setVisibility(View.VISIBLE);
+    }
+
+    public void setInvisibleSquares() {
+        // method to make the red square invisible
+        for (int i = 0; i<9; i++) {
+            imageViews[i].setVisibility(View.INVISIBLE);
+        }
     }
 
 
@@ -279,7 +295,9 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
             Log.i("EventHappen", "Letter is " + letter);
         }
         if (visualOn){
-            //Todo: run the visual part
+            //int index = gameLogic.returnRandomPosition();
+            //setVisibleSquare(index);
+            //Log.i("EventHappen", "Position is " + index);
         }
     }
 
