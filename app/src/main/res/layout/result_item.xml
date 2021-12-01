@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="4dp"
+    android:layout_marginTop="2dp"
+    android:layout_marginEnd="4dp"
+    android:layout_marginBottom="4dp"
+    app:cardBackgroundColor="#565656">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="409dp"
+        android:layout_height="wrap_content"
+        tools:layout_editor_absoluteX="1dp"
+        tools:layout_editor_absoluteY="124dp" />
+
+    <RelativeLayout
+        android:layout_width="390dp"
+        android:layout_height="72dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.476"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="26dp">
+
+        <TextView
+            android:id="@+id/textView_rItem_fxdname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginBottom="27dp"
+            android:text="@string/name_text"
+            android:textColor="#C5CAE9" />
+
+        <TextView
+            android:id="@+id/textView_rItem_nameVar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/textView_rItem_fxdname"
+            android:layout_alignBottom="@+id/textView_rItem_fxdname"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginBottom="0dp"
+            android:layout_toEndOf="@+id/textView_rItem_fxdname" />
+
+        <TextView
+            android:id="@+id/textView_rItem_scoreFxd1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/textView_rItem_fxdname"
+            android:layout_alignBottom="@+id/textView_rItem_fxdname"
+            android:layout_marginTop="1dp"
+            android:layout_marginEnd="6dp"
+            android:layout_marginBottom="0dp"
+            android:layout_toStartOf="@+id/textView_rItem_score"
+            android:text="@string/score_text"
+            android:textColor="#C5CAE9" />
+
+        <TextView
+            android:id="@+id/textView_rItem_maxScore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/textView_rItem_fxdname"
+            android:layout_alignBottom="@+id/textView_rItem_fxdname"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="50dp"
+            android:layout_marginBottom="1dp" />
+
+        <TextView
+            android:id="@+id/textView_rItem_slash"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/textView_rItem_maxScore"
+            android:layout_alignBottom="@+id/textView_rItem_maxScore"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="9dp"
+            android:layout_marginBottom="0dp"
+            android:layout_toStartOf="@+id/textView_rItem_maxScore"
+            android:text="@string/slash_Text"
+            android:textColor="#C5CAE9" />
+
+        <TextView
+            android:id="@+id/textView_rItem_score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/textView_rItem_slash"
+            android:layout_alignBottom="@+id/textView_rItem_slash"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="6dp"
+            android:layout_marginBottom="0dp"
+            android:layout_toStartOf="@+id/textView_rItem_slash" />
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

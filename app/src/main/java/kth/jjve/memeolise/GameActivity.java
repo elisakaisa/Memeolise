@@ -8,6 +8,7 @@ import static kth.jjve.memeolise.game.GameView.SIZE;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -20,11 +21,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.xml.transform.Result;
+
 import kth.jjve.memeolise.game.GameLogic;
+import kth.jjve.memeolise.game.ResultList;
+import kth.jjve.memeolise.game.ResultStorage;
+import kth.jjve.memeolise.game.Results;
 import kth.jjve.memeolise.utils.UtilTextToSpeech;
 import kth.jjve.memeolise.game.ResultsDialog;
 
@@ -68,7 +78,9 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
     private Drawable squareDrawable;
 
     /*------------------------ RESULTS ----------------------*/
-    private String resultName;
+    private Results results;
+    private ResultStorage resultStorage;
+    private List<Results> resultList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +96,7 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
         countDown2 = findViewById(R.id.IV_game_countdown2);
         countDown3 = findViewById(R.id.IV_game_countdown3);
       
-        /*----------------- Preferences ---------------------*/
+        /*----------------- Preferences/Results--------------*/
         getPreferences();
 
         /*------------------ Drawable -----------------------*/
@@ -335,11 +347,69 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
     @Override
     public void applyName(String name) {
         // Method to get the name from the dialog into the activity
-        resultName = name;
+        // Save the results to the result class
+        results = new Results();
+        results.setResultName(name);
+        results.setMaxscore(maxEventNo - n);
+        results.setScore(score);
+
+        saveResults(results);
+        finish();
     }
-      
-    //Todo: make a maximum score checker at the end of the game
-    //Todo: make a serialiser that saves the result
-    //Todo: go back to homescreen after saving the result
+
+    public void getResults(){
+        try{
+            FileInputStream fin = openFileInput("results.ser");
+
+            // Wrapping our stream
+            ObjectInputStream oin = new ObjectInputStream(fin);
+
+            // Reading in our object
+            resultStorage = (ResultStorage) oin.readObject();
+
+            // Closing our object stream which also closes the wrapped stream
+            oin.close();
+
+        } catch (Exception e) {
+            Log.i(LOG_TAG, "Error is " + e);
+            e.printStackTrace();
+        }
+
+        if (resultStorage != null){
+            resultList = resultStorage.getResultList();
+        }
+    }
+
+    public void saveResults(Results results){
+        getResults();
+
+        if(resultList == null){
+            resultList = new ArrayList<>();
+            resultList.add(results);
+        } else{
+            resultList.add(results);
+        }
+        ResultStorage resultStorage = new ResultStorage(resultList);
+        try{
+            // Open a file stream
+            FileOutputStream fos = openFileOutput("results.ser", Context.MODE_PRIVATE);
+
+            // Wrapping our file stream
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+
+            // Writing the serializable object to the file
+            oos.writeObject(resultStorage);
+
+            // Closing our object stream which also closes the wrapped stream.
+            oos.close();
+
+            Toast.makeText(getApplicationContext(), "Result saved", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            Log.i(LOG_TAG, "Exception is " + e);
+            e.printStackTrace();
+        }
+
+    }
+
     //Todo: add a safety for when both audio and visual have been turned off
 }

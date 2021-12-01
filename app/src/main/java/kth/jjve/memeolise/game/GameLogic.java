@@ -64,7 +64,6 @@ public class GameLogic {
 
     public int checkAudioScored(int n, int eventNo, boolean buttonPress){
         // Method to check if the user has scored on the audio
-        //Todo: save a maximum score somewhere
         String a = usedLetters.get(eventNo-1);              // -1 since initial event is 1 and not 0
         String b = usedLetters.get(eventNo - n - 1);
         boolean shouldPress = a.equals(b);

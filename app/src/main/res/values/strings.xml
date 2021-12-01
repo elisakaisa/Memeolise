@@ -38,5 +38,8 @@
     <string name="descr_cd2">countdown 2</string>
     <string name="descr_cd1">countdown 1</string>
     <string name="scoreText">Score:</string>
+    <string name="score_text">Score:</string>
+    <string name="slash_Text">/</string>
+    <string name="name_text">Name:</string>
 
 </resources>
