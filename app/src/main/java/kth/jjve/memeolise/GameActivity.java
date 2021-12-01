@@ -91,8 +91,8 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
         Resources resources = getResources();
         squareDrawable = ResourcesCompat.getDrawable(resources, R.drawable.square, null);
         //setVisibleSquare(2); //sets the visible square (index 0 to 8, from left to right, top to bottom, image tags called)
-        //initializeSquares();
-        //setInvisibleSquares();
+        initializeSquares();
+        setInvisibleSquares();
 
         /*-------------- On Click Listener ------------------*/
         buttonVisual.setOnClickListener(v -> {
@@ -219,7 +219,7 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
 
     public void setVisibleSquare(int index) {
         //method to make the red square visible
-        imageViews[index].setImageDrawable(squareDrawable);
+        //imageViews[index].setImageDrawable(squareDrawable);
         imageViews[index].setVisibility(View.VISIBLE);
     }
 
@@ -240,6 +240,14 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
                 publishCountdown(countdownNo);
                 countdownNo++;
             } else {
+                // clearing of previous red squares needs to be done on main thread
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        setInvisibleSquares();
+                    }
+                });
+
                 eventNo++;  //increase the eventNo (starts at 1)
                 Log.i("EventTask", "Event number " + eventNo);
                 if (eventNo <= n+1){
@@ -295,9 +303,16 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
             Log.i("EventHappen", "Letter is " + letter);
         }
         if (visualOn){
-            //int index = gameLogic.returnRandomPosition();
-            //setVisibleSquare(index);
-            //Log.i("EventHappen", "Position is " + index);
+            int index = gameLogic.returnRandomPosition();
+            // changes in UI need to be on main thread
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    setVisibleSquare(index);
+                }
+            });
+
+            Log.i("EventHappen", "Position is " + index);
         }
     }
 
