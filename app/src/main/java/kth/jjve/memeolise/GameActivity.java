@@ -67,6 +67,9 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
     /*---------------------- DRAWABLE -----------------------*/
     private Drawable squareDrawable;
 
+    /*----------------- TEXT TO SPEECH ----------------------*/
+    private UtilTextToSpeech utilTextToSpeech;
+
     /*------------------------ RESULTS ----------------------*/
     private String resultName;
 
@@ -90,9 +93,11 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
         /*------------------ Drawable -----------------------*/
         Resources resources = getResources();
         squareDrawable = ResourcesCompat.getDrawable(resources, R.drawable.square, null);
-        //setVisibleSquare(2); //sets the visible square (index 0 to 8, from left to right, top to bottom, image tags called)
         initializeSquares();
         setInvisibleSquares();
+
+        /*----------------- TEXT TO SPEECH ----------------------*/
+        utilTextToSpeech = new UtilTextToSpeech();
 
         /*-------------- On Click Listener ------------------*/
         buttonVisual.setOnClickListener(v -> {
