@@ -41,49 +41,50 @@
             android:id="@+id/IV_home_visualOn"
             android:layout_width="80dp"
             android:layout_height="80dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:contentDescription="@string/visual_on"
+            app:layout_constraintBottom_toTopOf="@+id/iv_home_events"
             app:layout_constraintEnd_toStartOf="@+id/IV_home_audioOff"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/buttonStart"
-            app:srcCompat="@drawable/ic_baseline_visibility_24"
-            android:contentDescription="@string/visual_on" />
+            app:srcCompat="@drawable/ic_baseline_visibility_24" />
 
         <ImageView
             android:id="@+id/IV_home_visualOff"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:contentDescription="@string/visual_off"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="@+id/IV_home_visualOn"
             app:layout_constraintEnd_toEndOf="@+id/IV_home_visualOn"
             app:layout_constraintStart_toStartOf="@+id/IV_home_visualOn"
             app:layout_constraintTop_toTopOf="@+id/IV_home_visualOn"
-            app:srcCompat="@drawable/ic_baseline_visibility_off_24"
-            android:contentDescription="@string/visual_off" />
+            app:srcCompat="@drawable/ic_baseline_visibility_off_24" />
 
         <ImageView
             android:id="@+id/IV_home_audioOff"
             android:layout_width="80dp"
             android:layout_height="80dp"
+            android:contentDescription="@string/audio_off"
             android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/IV_home_visualOn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/IV_home_visualOn"
             app:layout_constraintTop_toBottomOf="@+id/buttonStart"
-            app:srcCompat="@drawable/ic_baseline_volume_off_24"
-            android:contentDescription="@string/audio_off" />
+            app:layout_constraintVertical_bias="1.0"
+            app:srcCompat="@drawable/ic_baseline_volume_off_24" />
 
         <ImageView
             android:id="@+id/IV_home_audioOn"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:contentDescription="@string/audio_on"
             app:layout_constraintBottom_toBottomOf="@+id/IV_home_audioOff"
             app:layout_constraintEnd_toEndOf="@+id/IV_home_audioOff"
             app:layout_constraintStart_toStartOf="@+id/IV_home_audioOff"
             app:layout_constraintTop_toTopOf="@+id/IV_home_audioOff"
-            app:srcCompat="@drawable/ic_baseline_volume_up_24"
-            android:contentDescription="@string/audio_on" />
+            app:srcCompat="@drawable/ic_baseline_volume_up_24" />
 
         <ImageView
             android:id="@+id/buttonHelp"
@@ -97,6 +98,49 @@
             app:layout_constraintTop_toBottomOf="@+id/main_toolbar"
             app:srcCompat="@drawable/ic_baseline_question_mark_24"
             tools:ignore="TouchTargetSizeCheck" />
+
+        <TextView
+            android:id="@+id/tv_home_eventnr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_home_events"
+            app:layout_constraintStart_toEndOf="@+id/iv_home_events"
+            app:layout_constraintTop_toTopOf="@+id/iv_home_events"
+            app:layout_constraintVertical_bias="0.476" />
+
+        <TextView
+            android:id="@+id/tv_home_nback"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_home_nback"
+            app:layout_constraintStart_toEndOf="@+id/iv_home_nback"
+            app:layout_constraintTop_toTopOf="@+id/iv_home_nback"
+            app:layout_constraintVertical_bias="0.437" />
+
+        <ImageView
+            android:id="@+id/iv_home_events"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/IV_home_visualOn"
+            app:layout_constraintStart_toStartOf="@+id/IV_home_visualOn"
+            app:layout_constraintTop_toBottomOf="@+id/IV_home_visualOn"
+            app:srcCompat="@drawable/ic_baseline_cached_24"
+            android:contentDescription="@string/descr_IV_home_eventNr"/>
+
+        <ImageView
+            android:id="@+id/iv_home_nback"
+            android:layout_width="34dp"
+            android:layout_height="35dp"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_home_events"
+            app:layout_constraintEnd_toEndOf="@+id/IV_home_audioOff"
+            app:layout_constraintStart_toStartOf="@+id/IV_home_audioOff"
+            app:layout_constraintTop_toTopOf="@+id/iv_home_events"
+            app:layout_constraintVertical_bias="0.0"
+            app:srcCompat="@drawable/ic_baseline_arrow_circle_left_24"
+            android:contentDescription="@string/descr_IV_home_nBack"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

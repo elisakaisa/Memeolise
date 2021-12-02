@@ -41,5 +41,7 @@
     <string name="score_text">Score:</string>
     <string name="slash_Text">/</string>
     <string name="name_text">Name:</string>
+    <string name="descr_IV_home_eventNr">ImageView for the eventnumber</string>
+    <string name="descr_IV_home_nBack">IV for nBack display</string>
 
 </resources>
