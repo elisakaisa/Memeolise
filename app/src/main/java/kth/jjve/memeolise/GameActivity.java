@@ -150,8 +150,7 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
 
     @Override
     protected void onPause() {
-    // NB! Cancel the current and queued utterances, then shut down the service to
-    // de-allocate resources
+    // shut off text to speech
         if (textToSpeech != null) {
             textToSpeech.stop();
             textToSpeech.shutdown();
@@ -438,6 +437,7 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
     }
 
     public void getResults(){
+        // method to serialise the results
         try{
             FileInputStream fin = openFileInput("results.ser");
 
@@ -461,6 +461,7 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
     }
 
     public void saveResults(Results results){
+        // method for the serialization of results
         getResults();
 
         if(resultList == null){
