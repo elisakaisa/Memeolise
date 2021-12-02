@@ -64,6 +64,7 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
     private TextView eventNoView, scoreView;
     private ImageView[] imageViews;
     private ImageView countDown1, countDown2, countDown3;
+    private ImageView red_dot, orange_dot, green_dot;
 
     /*------------------------- COUNTERS --------------------*/
     private boolean visualClick;
@@ -98,6 +99,9 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
         countDown1 = findViewById(R.id.IV_game_countdown1);
         countDown2 = findViewById(R.id.IV_game_countdown2);
         countDown3 = findViewById(R.id.IV_game_countdown3);
+        red_dot = findViewById(R.id.reddot);
+        orange_dot = findViewById(R.id.orangedot);
+        green_dot = findViewById(R.id.greendot);
       
         /*----------------- Preferences/Results--------------*/
         getPreferences();
@@ -107,6 +111,7 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
         squareDrawable = ResourcesCompat.getDrawable(resources, R.drawable.square, null);
         initializeSquares();
         setInvisibleSquares();
+        setInvisiblePointDots();
 
         /*----------------- TEXT TO SPEECH ----------------------*/
         utilTextToSpeech = new UtilTextToSpeech();
@@ -236,7 +241,6 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
 
     public void setVisibleSquare(int index) {
         //method to make the red square visible
-        //imageViews[index].setImageDrawable(squareDrawable);
         imageViews[index].setVisibility(View.VISIBLE);
     }
 
@@ -245,6 +249,16 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
         for (int i = 0; i<9; i++) {
             imageViews[i].setVisibility(View.INVISIBLE);
         }
+    }
+
+    public void setInvisiblePointDots() {
+        green_dot.setVisibility(View.INVISIBLE);
+        orange_dot.setVisibility(View.INVISIBLE);
+        red_dot.setVisibility(View.INVISIBLE);
+    }
+
+    public void setVisiblePoint(ImageView dot) {
+        dot.setVisibility(View.VISIBLE);
     }
 
 
@@ -262,6 +276,7 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
                     @Override
                     public void run() {
                         setInvisibleSquares();
+                        setInvisiblePointDots();
                     }
                 });
 
@@ -297,15 +312,32 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
 
         if (scoreChecker == -1){
             // both are incorrect
-            // Todo: display something to show that something has not been noticed
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    setVisiblePoint(red_dot);
+                }
+            });
 
         } else if (scoreChecker == 0){
             // only one is incorrect
             score++;
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    setVisiblePoint(orange_dot);
+                }
+            });
 
         } else {
             // both are correct
             score = score +2;
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    setVisiblePoint(green_dot);
+                }
+            });
         }
         scoreView.setText(String.valueOf(score));
     }

@@ -216,4 +216,34 @@
         app:layout_constraintStart_toEndOf="@+id/textView_game_eventNoText"
         app:layout_constraintTop_toTopOf="@+id/textView_game_scoreText" />
 
+    <ImageView
+        android:id="@+id/greendot"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/green_dot" />
+
+    <ImageView
+        android:id="@+id/orangedot"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/orange_dot" />
+
+    <ImageView
+        android:id="@+id/reddot"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/red_dot" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
