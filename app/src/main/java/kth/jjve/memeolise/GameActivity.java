@@ -1,6 +1,8 @@
 package kth.jjve.memeolise;
 /*
 This activity is the activity in which the game is played
+Jitse van Esch & Elisa Perini
+2.12.21
  */
 
 import static kth.jjve.memeolise.game.GameView.SIZE;
@@ -13,6 +15,7 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -26,16 +29,15 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import javax.xml.transform.Result;
 
 import kth.jjve.memeolise.game.GameLogic;
 import kth.jjve.memeolise.game.ResultList;
 import kth.jjve.memeolise.game.ResultStorage;
 import kth.jjve.memeolise.game.Results;
-import kth.jjve.memeolise.utils.UtilTextToSpeech;
+//import kth.jjve.memeolise.utils.UtilTextToSpeech;
 import kth.jjve.memeolise.game.ResultsDialog;
 
 
@@ -64,6 +66,7 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
     private TextView eventNoView, scoreView;
     private ImageView[] imageViews;
     private ImageView countDown1, countDown2, countDown3;
+    private ImageView red_dot, orange_dot;
 
     /*------------------------- COUNTERS --------------------*/
     private boolean visualClick;
@@ -78,7 +81,9 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
     private Drawable squareDrawable;
 
     /*----------------- TEXT TO SPEECH ----------------------*/
-    private UtilTextToSpeech utilTextToSpeech;
+    //private UtilTextToSpeech utilTextToSpeech;
+    private TextToSpeech textToSpeech;
+    private static final int utteranceId = 42;
 
     /*------------------------ RESULTS ----------------------*/
     private Results results;
@@ -98,6 +103,8 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
         countDown1 = findViewById(R.id.IV_game_countdown1);
         countDown2 = findViewById(R.id.IV_game_countdown2);
         countDown3 = findViewById(R.id.IV_game_countdown3);
+        red_dot = findViewById(R.id.reddot);
+        orange_dot = findViewById(R.id.orangedot);
       
         /*----------------- Preferences/Results--------------*/
         getPreferences();
@@ -107,9 +114,10 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
         squareDrawable = ResourcesCompat.getDrawable(resources, R.drawable.square, null);
         initializeSquares();
         setInvisibleSquares();
+        setInvisiblePointDots();
 
         /*----------------- TEXT TO SPEECH ----------------------*/
-        utilTextToSpeech = new UtilTextToSpeech();
+        //utilTextToSpeech = new UtilTextToSpeech();
 
         /*-------------- On Click Listener ------------------*/
         buttonVisual.setOnClickListener(v -> {
@@ -142,9 +150,11 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
 
     @Override
     protected void onPause() {
-    // NB! Cancel the current and queued utterances, then shut down the service to
-    // de-allocate resources
-        UtilTextToSpeech.shutdown();
+    // shut off text to speech
+        if (textToSpeech != null) {
+            textToSpeech.stop();
+            textToSpeech.shutdown();
+        }
         super.onPause();
         cancelTimer();
     }
@@ -153,7 +163,14 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
     protected void onResume() {
         // re-initialise the text-to-speech service (was shutdown in onPause)
         super.onResume();
-        UtilTextToSpeech.initialize(getApplicationContext());
+        textToSpeech = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+                @Override
+                public void onInit(int status) {
+                    if (status == TextToSpeech.SUCCESS) {
+                        textToSpeech.setLanguage(Locale.UK);
+                    }
+                }
+        });
     }
 
   
@@ -229,6 +246,7 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
     
 
     public void initializeSquares(){
+        // sets red squares into their designated spots
         for (int i = 0; i<9; i++) {
             imageViews[i].setImageDrawable(squareDrawable);
         }
@@ -236,7 +254,6 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
 
     public void setVisibleSquare(int index) {
         //method to make the red square visible
-        //imageViews[index].setImageDrawable(squareDrawable);
         imageViews[index].setVisibility(View.VISIBLE);
     }
 
@@ -245,6 +262,17 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
         for (int i = 0; i<9; i++) {
             imageViews[i].setVisibility(View.INVISIBLE);
         }
+    }
+
+    public void setInvisiblePointDots() {
+        // makes colour scoring points invisibles
+        orange_dot.setVisibility(View.INVISIBLE);
+        red_dot.setVisibility(View.INVISIBLE);
+    }
+
+    public void setVisiblePoint(ImageView dot) {
+        // makes colour scoring point visible
+        dot.setVisibility(View.VISIBLE);
     }
 
 
@@ -258,11 +286,9 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
                 countdownNo++;
             } else {
                 // clearing of previous red squares needs to be done on main thread
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        setInvisibleSquares();
-                    }
+                runOnUiThread(() -> {
+                    setInvisibleSquares();
+                    setInvisiblePointDots();
                 });
 
                 eventNo++;  //increase the eventNo (starts at 1)
@@ -297,15 +323,23 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
 
         if (scoreChecker == -1){
             // both are incorrect
-            // Todo: display something to show that something has not been noticed
+            runOnUiThread(() -> setVisiblePoint(red_dot));
 
         } else if (scoreChecker == 0){
             // only one is incorrect
             score++;
+            runOnUiThread(() -> {
+                if (visualOn && audioOn) {
+                    setVisiblePoint(orange_dot);
+                }
+            });
 
         } else {
-            // both are correct
-            score = score +2;
+            if (audioOn && visualOn){
+                score = score +2;
+            } else{
+                score ++;
+            }
         }
         scoreView.setText(String.valueOf(score));
     }
@@ -316,18 +350,12 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
         handler.post(() -> eventNoView.setText(String.valueOf(eventNo)));
         if (audioOn){
             String letter = gameLogic.returnRandomLetter();
-            UtilTextToSpeech.sayIt(letter);
+            sayIt(letter);
             Log.i("EventHappen", "Letter is " + letter);
         }
         if (visualOn){
             int index = gameLogic.returnRandomPosition();
-            // changes in UI need to be on main thread
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    setVisibleSquare(index);
-                }
-            });
+            runOnUiThread(() -> setVisibleSquare(index));
 
             Log.i("EventHappen", "Position is " + index);
         }
@@ -338,6 +366,11 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
         // Method to reset button clicks
         visualClick = false;
         audioClick = false;
+    }
+
+    private void sayIt(String utterance) {
+        textToSpeech.speak(utterance, TextToSpeech.QUEUE_FLUSH,
+                    null, "" + utteranceId);
     }
 
 
@@ -388,7 +421,11 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
         // Save the results to the result class
         results = new Results();
         results.setResultName(name);
-        results.setMaxscore(maxEventNo - n);
+        if (audioOn && visualOn) {
+            results.setMaxscore((maxEventNo - n)*2);
+        } else {
+            results.setMaxscore(maxEventNo - n);
+        }
         results.setScore(score);
 
         saveResults(results);
@@ -396,6 +433,7 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
     }
 
     public void getResults(){
+        // method to deserialise the results
         try{
             FileInputStream fin = openFileInput("results.ser");
 
@@ -419,6 +457,7 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
     }
 
     public void saveResults(Results results){
+        // method for the serialization of results
         getResults();
 
         if(resultList == null){

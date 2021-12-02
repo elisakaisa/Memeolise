@@ -1,6 +1,9 @@
 package kth.jjve.memeolise.game;
 /*
-This class contains all the logic for the game
+function: contains all the logic for the game
+activity: game_activity
+Jitse van Esch & Elisa Perini
+2.12.21
  */
 
 import java.util.ArrayList;
@@ -25,12 +28,9 @@ public class GameLogic {
     public String returnRandomLetter(){
         // Method that takes a random letter from the letter list
         // Returns the letter and appends it to usedLetters
-//        Random rand = new Random();
-//        String letter = letterList.get(rand.nextInt(letterList.size()));
-//        usedLetters.add(letter);
-        String letter = "a";
-        usedLetters = Arrays.asList("a", "a", "b", "a", "a");
-        // Todo: revert above commenting after testing phase
+        Random rand = new Random();
+        String letter = letterList.get(rand.nextInt(letterList.size()));
+        usedLetters.add(letter);
 
         return letter;
     }
@@ -95,8 +95,6 @@ public class GameLogic {
         } else {
             return -1;
         }
-
-
     }
 
 
