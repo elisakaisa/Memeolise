@@ -25,12 +25,11 @@ public class GameLogic {
     public String returnRandomLetter(){
         // Method that takes a random letter from the letter list
         // Returns the letter and appends it to usedLetters
-//        Random rand = new Random();
-//        String letter = letterList.get(rand.nextInt(letterList.size()));
-//        usedLetters.add(letter);
-        String letter = "a";
-        usedLetters = Arrays.asList("a", "a", "b", "a", "a");
-        // Todo: revert above commenting after testing phase
+        Random rand = new Random();
+        String letter = letterList.get(rand.nextInt(letterList.size()));
+        usedLetters.add(letter);
+        //String letter = "a";
+        //usedLetters = Arrays.asList("a", "a", "b", "a", "a");
 
         return letter;
     }

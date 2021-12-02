@@ -317,31 +317,50 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
         // And outputs the score to the ui
         if (audioOn && !visualOn){
             scoreChecker = gameLogic.checkAudioScored(n, eventNo, audioClick);
+            scoreChecker = 1; //for colour scoring system to take into account that there's only audio
         } else if (visualOn && !audioOn){
             scoreChecker = gameLogic.checkVisualScored(n, eventNo, visualClick);
+            scoreChecker = 1; //for colour scoring system to take into account that there's only visual
         } else{
             scoreChecker = gameLogic.checkCombinedScored(n, eventNo, audioClick, visualClick);
         }
 
-        // needs to run on main thread, since affects image views
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (scoreChecker == -1){
+
+        if (scoreChecker == -1){
+            // both are incorrect
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
                     setVisiblePoint(red_dot);
+                }
+            });
 
-                } else if (scoreChecker == 0){
-                    // only one is incorrect
-                    score++;
+        } else if (scoreChecker == 0){
+            // only one is incorrect
+            score++;
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
                     setVisiblePoint(orange_dot);
+                }
+            });
 
-                } else {
-                    // both are correct
-                    score = score +2;
+        } else {
+            if (audioOn && !visualOn) {
+                score++;
+            } else if (visualOn && !audioOn) {
+                score++;
+            } else {
+                // both are correct
+                score = score + 2;
+            }
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
                     setVisiblePoint(green_dot);
                 }
-            }
-        });
+            });
+        }
         scoreView.setText(String.valueOf(score));
     }
 
