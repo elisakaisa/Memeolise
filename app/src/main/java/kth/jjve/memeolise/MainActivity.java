@@ -3,6 +3,9 @@ package kth.jjve.memeolise;
 This activity is the home screen of the app
 The homescreen contains a start button, a help button for game explanation
 It also contains a visual to show if audio/visual is on/off and a navigation bar
+
+Jitse van Esch & Elisa Perini
+2.12.21
  */
 
 import androidx.annotation.NonNull;

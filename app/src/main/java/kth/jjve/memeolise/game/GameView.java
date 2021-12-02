@@ -1,5 +1,10 @@
 package kth.jjve.memeolise.game;
-
+/*
+function: sets grid view
+activity: game_activity
+Jitse van Esch & Elisa Perini
+2.12.21
+ */
 
 import android.content.Context;
 
