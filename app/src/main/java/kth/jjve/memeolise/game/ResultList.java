@@ -1,4 +1,9 @@
 package kth.jjve.memeolise.game;
+/*
+
+Jitse van Esch & Elisa Perini
+2.12.21
+ */
 
 import java.io.Serializable;
 import java.util.ArrayList;

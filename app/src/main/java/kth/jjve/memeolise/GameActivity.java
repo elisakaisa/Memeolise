@@ -1,6 +1,8 @@
 package kth.jjve.memeolise;
 /*
 This activity is the activity in which the game is played
+Jitse van Esch & Elisa Perini
+2.12.21
  */
 
 import static kth.jjve.memeolise.game.GameView.SIZE;
@@ -64,7 +66,7 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
     private TextView eventNoView, scoreView;
     private ImageView[] imageViews;
     private ImageView countDown1, countDown2, countDown3;
-    private ImageView red_dot, orange_dot, green_dot;
+    private ImageView red_dot, orange_dot;
 
     /*------------------------- COUNTERS --------------------*/
     private boolean visualClick;
@@ -103,7 +105,6 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
         countDown3 = findViewById(R.id.IV_game_countdown3);
         red_dot = findViewById(R.id.reddot);
         orange_dot = findViewById(R.id.orangedot);
-        green_dot = findViewById(R.id.greendot);
       
         /*----------------- Preferences/Results--------------*/
         getPreferences();
@@ -151,7 +152,6 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
     protected void onPause() {
     // NB! Cancel the current and queued utterances, then shut down the service to
     // de-allocate resources
-        //UtilTextToSpeech.shutdown();
         if (textToSpeech != null) {
             textToSpeech.stop();
             textToSpeech.shutdown();
@@ -247,6 +247,7 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
     
 
     public void initializeSquares(){
+        // sets red squares into their designated spots
         for (int i = 0; i<9; i++) {
             imageViews[i].setImageDrawable(squareDrawable);
         }
@@ -265,12 +266,13 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
     }
 
     public void setInvisiblePointDots() {
-        green_dot.setVisibility(View.INVISIBLE);
+        // makes colour scoring points invisibles
         orange_dot.setVisibility(View.INVISIBLE);
         red_dot.setVisibility(View.INVISIBLE);
     }
 
     public void setVisiblePoint(ImageView dot) {
+        // makes colour scoring point visible
         dot.setVisibility(View.VISIBLE);
     }
 
@@ -285,12 +287,9 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
                 countdownNo++;
             } else {
                 // clearing of previous red squares needs to be done on main thread
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        setInvisibleSquares();
-                        setInvisiblePointDots();
-                    }
+                runOnUiThread(() -> {
+                    setInvisibleSquares();
+                    setInvisiblePointDots();
                 });
 
                 eventNo++;  //increase the eventNo (starts at 1)
@@ -317,30 +316,21 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
         // And outputs the score to the ui
         if (audioOn && !visualOn){
             scoreChecker = gameLogic.checkAudioScored(n, eventNo, audioClick);
-            scoreChecker = 1; //for colour scoring system to take into account that there's only audio
         } else if (visualOn && !audioOn){
             scoreChecker = gameLogic.checkVisualScored(n, eventNo, visualClick);
-            scoreChecker = 1; //for colour scoring system to take into account that there's only visual
         } else{
             scoreChecker = gameLogic.checkCombinedScored(n, eventNo, audioClick, visualClick);
         }
 
-
         if (scoreChecker == -1){
             // both are incorrect
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    setVisiblePoint(red_dot);
-                }
-            });
+            runOnUiThread(() -> setVisiblePoint(red_dot));
 
         } else if (scoreChecker == 0){
             // only one is incorrect
             score++;
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
+            runOnUiThread(() -> {
+                if (visualOn && audioOn) {
                     setVisiblePoint(orange_dot);
                 }
             });
@@ -354,12 +344,6 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
                 // both are correct
                 score = score + 2;
             }
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    setVisiblePoint(green_dot);
-                }
-            });
         }
         scoreView.setText(String.valueOf(score));
     }
@@ -376,12 +360,7 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
         if (visualOn){
             int index = gameLogic.returnRandomPosition();
             // changes in UI need to be on main thread
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    setVisibleSquare(index);
-                }
-            });
+            runOnUiThread(() -> setVisibleSquare(index));
 
             Log.i("EventHappen", "Position is " + index);
         }
@@ -447,7 +426,11 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
         // Save the results to the result class
         results = new Results();
         results.setResultName(name);
-        results.setMaxscore(maxEventNo - n);
+        if (audioOn && visualOn) {
+            results.setMaxscore((maxEventNo - n)*2);
+        } else {
+            results.setMaxscore(maxEventNo - n);
+        }
         results.setScore(score);
 
         saveResults(results);

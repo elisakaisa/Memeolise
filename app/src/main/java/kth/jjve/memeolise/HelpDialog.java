@@ -1,6 +1,9 @@
 package kth.jjve.memeolise;
 /*
-This class creates the help dialog in the home screen
+function: creates the help dialog in the home screen
+activity: main_activity
+Jitse van Esch & Elisa Perini
+2.12.21
  */
 
 import android.app.Dialog;

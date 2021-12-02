@@ -30,7 +30,8 @@
         <entry key="app/src/main/res/drawable/orange_dot.xml" value="0.27239583333333334" />
         <entry key="app/src/main/res/drawable/red_dot.xml" value="0.27239583333333334" />
         <entry key="app/src/main/res/drawable/square.xml" value="0.27239583333333334" />
-        <entry key="app/src/main/res/layout/activity_game.xml" value="0.19791666666666666" />
+        <entry key="app/src/main/res/layout/activity_game.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_prefs.xml" value="0.190625" />
       </map>
     </option>
   </component>

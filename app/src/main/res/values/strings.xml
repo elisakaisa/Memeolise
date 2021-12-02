@@ -10,7 +10,6 @@
     <string name="tv_prefs_Theme">Theme</string>
     <string name="tv_prefs_Voice">Voice</string>
     <string name="tv_prefs_EventInterval">Event \ninterval</string>
-    <string name="et_prefs_hintNumberofEvents">[int]</string>
     <string name="et_prefs_ValueN">[int]</string>
     <string name="buttonStart">Start</string>
     <string name="tv_prefs_Audio">Audio</string>
@@ -41,5 +40,6 @@
     <string name="score_text">Score:</string>
     <string name="slash_Text">/</string>
     <string name="name_text">Name:</string>
+    <string name="_2n_3"><![CDATA[> 2n+3]]></string>
 
 </resources>

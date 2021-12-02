@@ -1,6 +1,9 @@
 package kth.jjve.memeolise.game;
 /*
-This class contains all the logic for the game
+function: contains all the logic for the game
+activity: game_activity
+Jitse van Esch & Elisa Perini
+2.12.21
  */
 
 import java.util.ArrayList;
@@ -94,8 +97,6 @@ public class GameLogic {
         } else {
             return -1;
         }
-
-
     }
 
 
