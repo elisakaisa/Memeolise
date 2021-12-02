@@ -36,7 +36,7 @@ public class ResultsDialog extends AppCompatDialogFragment {
         builder.setView(view)
                 .setTitle("Name for results")
                 .setNegativeButton("cancel", (dialog, which) -> {
-
+                    listener.savingCancelled();
                 })
                 .setPositiveButton("save result", (dialog, which) -> {
                     String resultName = inputName.getText().toString();
@@ -59,5 +59,7 @@ public class ResultsDialog extends AppCompatDialogFragment {
 
     public interface ResultsDialogListener{
         void applyName(String name);
+
+        void savingCancelled();
     }
 }

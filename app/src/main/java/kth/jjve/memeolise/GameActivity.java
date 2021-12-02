@@ -163,13 +163,10 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
     protected void onResume() {
         // re-initialise the text-to-speech service (was shutdown in onPause)
         super.onResume();
-        textToSpeech = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
-                @Override
-                public void onInit(int status) {
-                    if (status == TextToSpeech.SUCCESS) {
-                        textToSpeech.setLanguage(Locale.UK);
-                    }
-                }
+        textToSpeech = new TextToSpeech(getApplicationContext(), status -> {
+            if (status == TextToSpeech.SUCCESS) {
+                textToSpeech.setLanguage(Locale.UK);
+            }
         });
     }
 
@@ -429,6 +426,12 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
         results.setScore(score);
 
         saveResults(results);
+        finish();
+    }
+
+    @Override
+    public void savingCancelled(){
+        Toast.makeText(getApplicationContext(), "saving cancelled", Toast.LENGTH_SHORT).show();
         finish();
     }
 
