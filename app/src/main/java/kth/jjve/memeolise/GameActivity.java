@@ -335,13 +335,10 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
             });
 
         } else {
-            if (audioOn && !visualOn) {
-                score++;
-            } else if (visualOn && !audioOn) {
-                score++;
-            } else {
-                // both are correct
-                score = score + 2;
+            if (audioOn && visualOn){
+                score = score +2;
+            } else{
+                score ++;
             }
         }
         scoreView.setText(String.valueOf(score));
@@ -358,7 +355,6 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
         }
         if (visualOn){
             int index = gameLogic.returnRandomPosition();
-            // changes in UI need to be on main thread
             runOnUiThread(() -> setVisibleSquare(index));
 
             Log.i("EventHappen", "Position is " + index);
@@ -437,7 +433,7 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
     }
 
     public void getResults(){
-        // method to serialise the results
+        // method to deserialise the results
         try{
             FileInputStream fin = openFileInput("results.ser");
 

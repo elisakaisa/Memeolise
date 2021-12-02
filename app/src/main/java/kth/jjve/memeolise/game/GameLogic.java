@@ -31,8 +31,6 @@ public class GameLogic {
         Random rand = new Random();
         String letter = letterList.get(rand.nextInt(letterList.size()));
         usedLetters.add(letter);
-        //String letter = "a";
-        //usedLetters = Arrays.asList("a", "a", "b", "a", "a");
 
         return letter;
     }
