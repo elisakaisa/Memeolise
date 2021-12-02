@@ -124,7 +124,6 @@ public class PrefsActivity extends AppCompatActivity implements NavigationView.O
     protected void onResume(){
         super.onResume();
         navigationView2.setCheckedItem(R.id.nav_preferences);
-        Log.i(LOG_TAG, "onResume happens");
     }
 
     @Override

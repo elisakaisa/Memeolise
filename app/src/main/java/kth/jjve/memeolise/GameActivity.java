@@ -13,6 +13,7 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -26,16 +27,15 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import javax.xml.transform.Result;
 
 import kth.jjve.memeolise.game.GameLogic;
 import kth.jjve.memeolise.game.ResultList;
 import kth.jjve.memeolise.game.ResultStorage;
 import kth.jjve.memeolise.game.Results;
-import kth.jjve.memeolise.utils.UtilTextToSpeech;
+//import kth.jjve.memeolise.utils.UtilTextToSpeech;
 import kth.jjve.memeolise.game.ResultsDialog;
 
 
@@ -79,7 +79,9 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
     private Drawable squareDrawable;
 
     /*----------------- TEXT TO SPEECH ----------------------*/
-    private UtilTextToSpeech utilTextToSpeech;
+    //private UtilTextToSpeech utilTextToSpeech;
+    private TextToSpeech textToSpeech;
+    private static final int utteranceId = 42;
 
     /*------------------------ RESULTS ----------------------*/
     private Results results;
@@ -114,7 +116,7 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
         setInvisiblePointDots();
 
         /*----------------- TEXT TO SPEECH ----------------------*/
-        utilTextToSpeech = new UtilTextToSpeech();
+        //utilTextToSpeech = new UtilTextToSpeech();
 
         /*-------------- On Click Listener ------------------*/
         buttonVisual.setOnClickListener(v -> {
@@ -149,7 +151,11 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
     protected void onPause() {
     // NB! Cancel the current and queued utterances, then shut down the service to
     // de-allocate resources
-        UtilTextToSpeech.shutdown();
+        //UtilTextToSpeech.shutdown();
+        if (textToSpeech != null) {
+            textToSpeech.stop();
+            textToSpeech.shutdown();
+        }
         super.onPause();
         cancelTimer();
     }
@@ -158,7 +164,14 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
     protected void onResume() {
         // re-initialise the text-to-speech service (was shutdown in onPause)
         super.onResume();
-        UtilTextToSpeech.initialize(getApplicationContext());
+        textToSpeech = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+                @Override
+                public void onInit(int status) {
+                    if (status == TextToSpeech.SUCCESS) {
+                        textToSpeech.setLanguage(Locale.UK);
+                    }
+                }
+        });
     }
 
   
@@ -310,35 +323,25 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
             scoreChecker = gameLogic.checkCombinedScored(n, eventNo, audioClick, visualClick);
         }
 
-        if (scoreChecker == -1){
-            // both are incorrect
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
+        // needs to run on main thread, since affects image views
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (scoreChecker == -1){
                     setVisiblePoint(red_dot);
-                }
-            });
 
-        } else if (scoreChecker == 0){
-            // only one is incorrect
-            score++;
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
+                } else if (scoreChecker == 0){
+                    // only one is incorrect
+                    score++;
                     setVisiblePoint(orange_dot);
-                }
-            });
 
-        } else {
-            // both are correct
-            score = score +2;
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
+                } else {
+                    // both are correct
+                    score = score +2;
                     setVisiblePoint(green_dot);
                 }
-            });
-        }
+            }
+        });
         scoreView.setText(String.valueOf(score));
     }
 
@@ -348,7 +351,7 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
         handler.post(() -> eventNoView.setText(String.valueOf(eventNo)));
         if (audioOn){
             String letter = gameLogic.returnRandomLetter();
-            UtilTextToSpeech.sayIt(letter);
+            sayIt(letter);
             Log.i("EventHappen", "Letter is " + letter);
         }
         if (visualOn){
@@ -370,6 +373,11 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
         // Method to reset button clicks
         visualClick = false;
         audioClick = false;
+    }
+
+    private void sayIt(String utterance) {
+        textToSpeech.speak(utterance, TextToSpeech.QUEUE_FLUSH,
+                    null, "" + utteranceId);
     }
 
 
