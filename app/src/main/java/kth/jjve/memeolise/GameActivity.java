@@ -490,6 +490,4 @@ public class GameActivity extends AppCompatActivity implements ResultsDialog.Res
         }
 
     }
-
-    //Todo: add a safety for when both audio and visual have been turned off
 }

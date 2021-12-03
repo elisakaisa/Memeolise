@@ -90,6 +90,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             // This button starts the game in the gameactivity
             if(cPreferences == null){
                 Toast.makeText(getApplicationContext(), "There are no preferences yet", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(MainActivity.this, PrefsActivity.class);
+                startActivity(intent);
             } else if (!cAudioOnOff && !cVisualOnOff){
                 Toast.makeText(getApplicationContext(), "No method selected", Toast.LENGTH_SHORT).show();
             } else {

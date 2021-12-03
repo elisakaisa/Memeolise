@@ -42,7 +42,7 @@ public class PrefsActivity extends AppCompatActivity implements NavigationView.O
 
     /*-------------------------- PREFS ----------------------*/
     private Preferences cPreferences;   //Object of the class Preferences
-    private int cTheme;                 //Todo: add the theme here
+    private int cTheme;
     private int cVoice = 42;            //Integer that decides which voice is being used
     private boolean cAudio = true;      //Boolean that decides if audio is on or off
     private boolean cVisual = true;     //Boolean that decides if visuals are on or off
@@ -100,18 +100,14 @@ public class PrefsActivity extends AppCompatActivity implements NavigationView.O
             Toast toast = Toast.makeText(getApplicationContext(), "Preferences saved",
                     Toast.LENGTH_SHORT);
             toast.show();
+            finish();
         });
 
         switch1.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            //TODO: take Elisa's political crap away before handing in :D
             if (isChecked){
                 cVoice = 42;
-                Toast toast = Toast.makeText(getApplicationContext(), "Gender is a social construct", Toast.LENGTH_SHORT);
-                toast.show();
             }else{
-                cVoice = 32; //Todo: find how to change the voice
-                Toast toast = Toast.makeText(getApplicationContext(), "Gender is a social construct", Toast.LENGTH_SHORT);
-                toast.show();
+                cVoice = 42;
             }
         });
 
